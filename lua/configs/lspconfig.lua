@@ -1,6 +1,6 @@
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "clangd", "volar" },
+    ensure_installed = { "clangd" },
     automatic_installation = false,
     automatic_enable = true,
 })
