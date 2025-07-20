@@ -70,8 +70,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
         buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
         buf_map(bufnr, "n", "<leader>sh", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
         buf_map(bufnr, "n", "<leader>of", "<cmd>lua vim.diagnostic.open_float()<CR>")
-        buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-        buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
+        buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
+        buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
     end,
 })
 

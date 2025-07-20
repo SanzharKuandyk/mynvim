@@ -48,7 +48,21 @@ require("lazy").setup({
             "nvim-lua/plenary.nvim",
         },
         config = function()
-            require("spectre").setup({})
+            require("spectre").setup({
+                find_engine = {
+                    ["rg"] = {
+                        cmd = "rg",
+                        args = {
+                            "--color=never",
+                            "--no-heading",
+                            "--with-filename",
+                            "--line-number",
+                            "--column",
+                            "--fixed-strings",
+                        },
+                    },
+                },
+            })
         end,
     },
     {
@@ -197,7 +211,9 @@ require("lazy").setup({
     },
     {
         "folke/trouble.nvim",
-        opts = {},
+        opts = {
+            auto_preview = false,
+        },
         cmd = "Trouble",
         keys = {
             {

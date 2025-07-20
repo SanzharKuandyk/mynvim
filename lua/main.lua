@@ -48,13 +48,15 @@ vim.api.nvim_set_keymap("n", "<leader>db", ":split<CR>", { noremap = true, silen
 -- Close split
 vim.api.nvim_set_keymap("n", "<leader>de", ":close<CR>", { noremap = true, silent = true })
 
+function resize_split(direction, amount)
+    vim.cmd(direction == "height" and ("resize " .. amount) or ("vertical resize " .. amount))
+end
+
 -- Resize splits
--- TODO: Remap
---vim.api.nvim_set_keymap("n", "<leader>dk", ":resize +5<CR>", { noremap = true, silent = true }) -- Increase horizontal split height
---vim.api.nvim_set_keymap("n", "<leader>dj", ":resize -5<CR>", { noremap = true, silent = true }) -- Decrease horizontal split height
---
---vim.api.nvim_set_keymap("n", "<leader>dh", ":vertical resize +5<CR>", { noremap = true, silent = true }) -- Increase vertical split width
---vim.api.nvim_set_keymap("n", "<leader>dl", ":vertical resize -5<CR>", { noremap = true, silent = true }) -- Decrease vertical split width
+vim.api.nvim_set_keymap("n", "<C-Up>", ":lua resize_split('height', '+5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Down>", ":lua resize_split('height', '-5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Left>", ":lua resize_split('width', '-5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Right>", ":lua resize_split('width', '+5')<CR>", { noremap = true, silent = true })
 
 -- Split navigation keybindings
 vim.api.nvim_set_keymap("t", "<C-h>", "<C-\\><C-n><C-w>h", { noremap = true })
