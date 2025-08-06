@@ -19,6 +19,7 @@ conform.setup({
         gdscript = { "gdformat" },
         toml = { "taplo" },
         markdown = { "mdformat" },
+        blade = { "blade-formatter" },
     },
 })
 
