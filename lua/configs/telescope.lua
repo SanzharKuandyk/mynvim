@@ -25,6 +25,11 @@ vim.keymap.set("n", "<leader>fp", function()
     telescope.extensions.project.project()
 end, {})
 
+-- Keybinding to filter notifications from nvim-notify
+vim.keymap.set("n", "<leader>fn", function()
+    telescope.extensions.notify.notify()
+end, {})
+
 -- Keybinding to open the search plugin's Telescope tabs
 vim.keymap.set("n", "<leader>tt", function()
     require("search").open()
