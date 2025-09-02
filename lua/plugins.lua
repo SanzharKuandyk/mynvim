@@ -95,6 +95,7 @@ require("lazy").setup({
             projects = { -- define project roots
                 env.PROJECTS_PATH,
             },
+            last_session_on_startup = false,
             picker = {
                 type = "telescope", -- one of "telescope", "fzf-lua", or "snacks"
             },
