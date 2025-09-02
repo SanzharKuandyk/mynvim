@@ -26,8 +26,6 @@
   "move.nvim": { "branch": "main", "commit": "599b14047b82e92874b9a408e4df228b965c3a1d" },
   "nagisa.nvim": { "branch": "main", "commit": "16844c96b3fff09bdf64efd57e4c0fc3639dab03" },
   "neogit": { "branch": "master", "commit": "4046f747739cf7e7b9aada447f3edc59c947b111" },
-  "neovim-project": { "branch": "main", "commit": "1c66eef59b2d1319d40b04c16abe51662dc5e71f" },
-  "neovim-session-manager": { "branch": "master", "commit": "3409dc920d40bec4c901c0a122a80bee03d6d1e1" },
   "nvim-autopairs": { "branch": "master", "commit": "23320e75953ac82e559c610bec5a90d9c6dfa743" },
   "nvim-colorizer.lua": { "branch": "master", "commit": "a065833f35a3a7cc3ef137ac88b5381da2ba302e" },
   "nvim-dap": { "branch": "master", "commit": "7891b01beedc37cef4eaf2e92563bd0a5b6e9c58" },

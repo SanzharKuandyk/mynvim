@@ -25,8 +25,6 @@ vim.keymap.set("n", "<leader>fp", function()
     telescope.extensions.project.project()
 end, {})
 
-vim.keymap.set("n", "<leader>dp", ":NeovimProjectDiscover<CR>", {})
-
 -- Keybinding to open the search plugin's Telescope tabs
 vim.keymap.set("n", "<leader>tt", function()
     require("search").open()
