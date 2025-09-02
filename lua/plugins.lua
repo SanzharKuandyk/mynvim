@@ -66,6 +66,38 @@ require("lazy").setup({
             })
         end,
     },
+
+    -- vim notify
+    {
+        "rcarriga/nvim-notify",
+        config = function()
+            require("notify").setup({
+                -- Optional settings
+                stages = "fade_in_slide_out", -- Animation style
+                timeout = 3000, -- Notification duration in milliseconds
+                background_colour = "#000000", -- Adjust for visibility on your theme
+                render = "default", -- Rendering style
+                minimum_width = 50, -- Minimum width of notification window
+            })
+            -- Replace vim.notify with nvim-notify
+            vim.notify = require("notify")
+        end,
+    },
+
+    -- Upload, download, and diff files or directories between your local workspace and remote servers via rsync and OpenSSH
+    {
+        "coffebar/transfer.nvim",
+        lazy = true,
+        cmd = {
+            "TransferInit",
+            "DiffRemote",
+            "TransferUpload",
+            "TransferDownload",
+            "TransferDirDiff",
+            "TransferRepeat",
+        },
+        opts = {},
+    },
     {
         "stevearc/oil.nvim",
         -- Optional dependencies
