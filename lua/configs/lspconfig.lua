@@ -74,5 +74,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
         buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
     end,
 })
-
-vim.keymap.set("n", "<Tab>", ":EagleWin<CR>", { noremap = true, silent = true })

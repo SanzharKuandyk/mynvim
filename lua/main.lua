@@ -84,9 +84,6 @@ vim.api.nvim_set_keymap("n", "<leader>qp", ":cprev<CR>", { noremap = true, silen
 vim.api.nvim_set_keymap("n", "<leader>ln", ":lnext<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>lp", ":lprev<CR>", { noremap = true, silent = true })
 
--- Buffer navigation/tab navigation
-vim.api.nvim_set_keymap("n", "<leader>tn", ":tabnew<CR>", { noremap = true })
-
 -- Switch to next buffer/tab
 vim.api.nvim_set_keymap("n", "<leader>n", ":bnext<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>p", ":bprev<CR>", { noremap = true })
@@ -113,28 +110,6 @@ vim.g.ctrlp_user_command = {
     -- Exclude .git directory
     "rg --files --hidden --iglob !.git",
 }
-
-function Load_env()
-    local env = {}
-    local env_file_path = vim.fn.stdpath("config") .. "/.env"
-
-    local file = io.open(env_file_path, "r")
-    if not file then
-        print("Error: .env file not found at " .. env_file_path)
-        return env
-    end
-
-    for line in file:lines() do
-        if line ~= "" and line:sub(1, 1) ~= "#" then
-            local key, value = line:match("^(%S+)=(%S+)$")
-            if key and value then
-                env[key] = value
-            end
-        end
-    end
-    file:close()
-    return env
-end
 
 local previous_directory = nil
 

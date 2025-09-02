@@ -11,16 +11,17 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local env_utils = require("utils.env")
+local env = env_utils.Load_env() or {}
+
 require("lazy").setup({
-    -- Highlight line that cursor jumped on
+    -- Floating windows for goto
     {
-        "danilamihailov/beacon.nvim",
-        config = function()
-            require("beacon").setup()
-        end,
+        "rmagatti/goto-preview",
+        dependencies = { "rmagatti/logger.nvim" },
+        event = "BufEnter",
+        config = true,
     },
-    -- Wezterm moving between splits
-    { "letieu/wezterm-move.nvim", event = "VeryLazy" },
     {
         "nvim-lualine/lualine.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
@@ -31,7 +32,7 @@ require("lazy").setup({
     { "norcalli/nvim-colorizer.lua", event = "VeryLazy" },
     -- Automatically close HTML tags
     { "alvan/vim-closetag", event = "VeryLazy" },
-    { "nvzone/showkeys", cmd = "ShowkeysToggle" },
+    { "nvzone/showkeys", cmd = "ShowkeysToggle", opts = { position = "top-right" } },
     -- Surround selections
     {
         "kylechui/nvim-surround",
@@ -87,11 +88,34 @@ require("lazy").setup({
     -- Package management
     { "williamboman/mason.nvim", event = "VeryLazy" },
     { "williamboman/mason-lspconfig.nvim", event = "VeryLazy" },
-
+    -- Project management
+    {
+        "coffebar/neovim-project",
+        opts = {
+            projects = { -- define project roots
+                env.PROJECTS_PATH,
+            },
+            picker = {
+                type = "telescope", -- one of "telescope", "fzf-lua", or "snacks"
+            },
+        },
+        init = function()
+            -- enable saving the state of plugins in the session
+            vim.opt.sessionoptions:append("globals") -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
+        end,
+        dependencies = {
+            { "nvim-lua/plenary.nvim" },
+            -- optional picker
+            { "nvim-telescope/telescope.nvim", tag = "0.1.8" },
+            { "Shatur/neovim-session-manager" },
+        },
+        lazy = false,
+        priority = 100,
+    },
     -- Fuzzy finder and picker
     {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.6",
+        tag = "0.1.8",
         event = "VeryLazy",
         dependencies = { { "nvim-lua/plenary.nvim", event = "VeryLazy" } },
     },
@@ -143,6 +167,8 @@ require("lazy").setup({
         end,
         event = "VeryLazy",
     },
+    -- Zen mode
+    { "folke/zen-mode.nvim", event = "VeryLazy" },
     -- Theme Picker
     { "zaldih/themery.nvim", event = "VeryLazy" },
     -- Themes
@@ -153,7 +179,6 @@ require("lazy").setup({
         end,
     },
     { "dasupradyumna/midnight.nvim", event = "VeryLazy" },
-    { "folke/zen-mode.nvim", event = "VeryLazy" },
     { "folke/twilight.nvim", event = "VeryLazy" },
     -- Buffer line
     {
@@ -193,13 +218,6 @@ require("lazy").setup({
                     },
                 },
             },
-        },
-    },
-    {
-        "soulis-1256/eagle.nvim",
-        event = "VeryLazy",
-        opts = {
-            keyboard_mode = true,
         },
     },
     {

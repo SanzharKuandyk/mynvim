@@ -10,8 +10,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local function get_godot_address()
-    local envs = Load_env()
-    return envs["GODOT_ADDRESS"] or "127.0.0.1:55432"
+    local env_utils = require("utils.env")
+    local env = env_utils.Load_env() or {}
+    return env["GODOT_ADDRESS"] or "127.0.0.1:55432"
 end
 
 local function is_address_in_use(address)
