@@ -36,6 +36,7 @@ vim.api.nvim_create_autocmd("DirChanged", {
 })
 
 -- Theme
+vim.g.nagisa_transparent = false
 vim.cmd.colorscheme("EndOfTheWorld")
 
 -- File Saving
@@ -48,15 +49,15 @@ vim.api.nvim_set_keymap("n", "<leader>db", ":split<CR>", { noremap = true, silen
 -- Close split
 vim.api.nvim_set_keymap("n", "<leader>de", ":close<CR>", { noremap = true, silent = true })
 
-function resize_split(direction, amount)
+function Resize_split(direction, amount)
     vim.cmd(direction == "height" and ("resize " .. amount) or ("vertical resize " .. amount))
 end
 
 -- Resize splits
-vim.api.nvim_set_keymap("n", "<C-Up>", ":lua resize_split('height', '+5')<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-Down>", ":lua resize_split('height', '-5')<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-Left>", ":lua resize_split('width', '-5')<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-Right>", ":lua resize_split('width', '+5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Up>", ":lua Resize_split('height', '+5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Down>", ":lua Resize_split('height', '-5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Left>", ":lua Resize_split('width', '-5')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-Right>", ":lua Resize_split('width', '+5')<CR>", { noremap = true, silent = true })
 
 -- Split navigation keybindings
 vim.api.nvim_set_keymap("t", "<C-h>", "<C-\\><C-n><C-w>h", { noremap = true })

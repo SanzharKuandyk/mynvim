@@ -11,8 +11,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local env_utils = require("utils.env")
-local env = env_utils.Load_env() or {}
+--local env_utils = require("utils.env")
+--local env = env_utils.Load_env() or {}
 
 require("lazy").setup({
     -- Floating windows for goto
@@ -78,6 +78,7 @@ require("lazy").setup({
                 background_colour = "#000000", -- Adjust for visibility on your theme
                 render = "default", -- Rendering style
                 minimum_width = 50, -- Minimum width of notification window
+                merge_duplicates = true,
             })
             -- Replace vim.notify with nvim-notify
             vim.notify = require("notify")
@@ -232,7 +233,7 @@ require("lazy").setup({
         "j-hui/fidget.nvim",
         event = "VeryLazy",
         config = function()
-            require("fidget").setup()
+            require("fidget").setup({})
         end,
     },
     {
