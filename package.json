@@ -15,12 +15,12 @@
   "license": "ISC",
   "devDependencies": {
     "@johnnymorganz/stylua": "^0.20.0",
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.10"
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2"
   },
   "dependencies": {
     "-": "^0.0.1",
     "g": "^2.0.1",
-    "npm": "^11.4.1"
+    "npm": "^11.6.0"
   }
 }
