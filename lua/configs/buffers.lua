@@ -1,14 +1,4 @@
-require("bufferline").setup({
-    options = {
-        custom_filter = function(buf_number)
-            local bufname = vim.fn.bufname(buf_number)
-            if bufname == "" then
-                return false
-            end
-            return true
-        end,
-    },
-})
+vim.keymap.set("n", "bl", ":lua require('buffer_manager.ui').toggle_quick_menu()<CR>", { silent = true })
 
 function Delete_buffer()
     local bufnr = vim.fn.bufnr("%")

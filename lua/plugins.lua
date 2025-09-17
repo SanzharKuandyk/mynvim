@@ -11,17 +11,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
---local env_utils = require("utils.env")
---local env = env_utils.Load_env() or {}
+local env_utils = require("utils.env")
+local env = env_utils.Load_env() or {}
 
 require("lazy").setup({
-    -- Floating windows for goto
-    {
-        "rmagatti/goto-preview",
-        dependencies = { "rmagatti/logger.nvim" },
-        event = "BufEnter",
-        config = true,
-    },
+    -- Buffer Manager
+    { "j-morano/buffer_manager.nvim", dependencies = {
+        "nvim-lua/plenary.nvim",
+    } },
     {
         "nvim-lualine/lualine.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
@@ -144,6 +141,7 @@ require("lazy").setup({
         event = "VeryLazy",
         dependencies = { "nvim-lua/plenary.nvim" },
     },
+
     { -- highlighting for harpoon
         "letieu/harpoon-lualine",
         event = "VeryLazy",
@@ -154,6 +152,15 @@ require("lazy").setup({
             },
         },
     },
+
+    -- Floating windows for goto
+    {
+        "rmagatti/goto-preview",
+        dependencies = { "rmagatti/logger.nvim" },
+        event = "BufEnter",
+        config = true,
+    },
+
     -- Better marks
     {
         "chentoast/marks.nvim",
@@ -351,6 +358,17 @@ require("lazy").setup({
     },
     -- Devicons
     { "ryanoasis/vim-devicons", event = "VeryLazy" },
+    -- Toggl Track
+    {
+        "sanzharkuandyk/toggl-track.nvim",
+        config = function()
+            require("toggl-track").setup({
+                api_token = env.TOGGL_API_TOKEN,
+                picker = "telescope",
+            })
+        end,
+        dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    },
 
     -- Disable some rtp plugins
     performance = {
