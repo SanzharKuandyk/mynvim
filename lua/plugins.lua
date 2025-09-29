@@ -133,7 +133,7 @@ require("lazy").setup({
         dependencies = { "nvim-telescope/telescope.nvim" },
     },
     -- Move Line and Blocks
-    { "fedepujol/move.nvim", event = "VeryLazy" },
+    { "booperlv/nvim-gomove", event = "VeryLazy" },
     -- Navigation
     {
         "ThePrimeagen/harpoon",
