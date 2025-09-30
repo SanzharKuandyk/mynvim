@@ -1,32 +1,32 @@
-require("move").setup({
-    line = {
-        enable = true, -- Enables line movement
-        indent = true, -- Toggles indentation
-    },
-    block = {
-        enable = true, -- Enables block movement
-        indent = true, -- Toggles indentation
-    },
-    word = {
-        enable = true, -- Enables word movement
-    },
-    char = {
-        enable = false, -- Enables char movement
-    },
+require("gomove").setup({
+    map_defaults = false, -- disable default keymaps
+    reindent = true,
+    undojoin = true,
+    move_past_end_col = false,
 })
 
 local opts = { noremap = true, silent = true }
 
--- Normal-mode commands
-vim.keymap.set("n", "<C-A-j>", ":MoveLine(1)<CR>", opts)
-vim.keymap.set("n", "<C-A-k>", ":MoveLine(-1)<CR>", opts)
-vim.keymap.set("n", "<C-A-h>", ":MoveHChar(-1)<CR>", opts)
-vim.keymap.set("n", "<C-A-l>", ":MoveHChar(1)<CR>", opts)
-vim.keymap.set("n", "<leader>wf", ":MoveWord(1)<CR>", opts)
-vim.keymap.set("n", "<leader>wb", ":MoveWord(-1)<CR>", opts)
+-- Normal mode move
+vim.keymap.set("n", "<C-A-h>", "<Plug>GoNSMLeft", opts)
+vim.keymap.set("n", "<C-A-j>", "<Plug>GoNSMDown", opts)
+vim.keymap.set("n", "<C-A-k>", "<Plug>GoNSMUp", opts)
+vim.keymap.set("n", "<C-A-l>", "<Plug>GoNSMRight", opts)
 
--- Visual-mode commands
-vim.keymap.set("v", "<C-A-j>", ":MoveBlock(1)<CR>", opts)
-vim.keymap.set("v", "<C-A-k>", ":MoveBlock(-1)<CR>", opts)
-vim.keymap.set("v", "<C-A-h>", ":MoveHBlock(-1)<CR>", opts)
-vim.keymap.set("v", "<C-A-l>", ":MoveHBlock(1)<CR>", opts)
+-- Visual mode move
+vim.keymap.set("x", "<C-A-h>", "<Plug>GoVSMLeft", opts)
+vim.keymap.set("x", "<C-A-j>", "<Plug>GoVSMDown", opts)
+vim.keymap.set("x", "<C-A-k>", "<Plug>GoVSMUp", opts)
+vim.keymap.set("x", "<C-A-l>", "<Plug>GoVSMRight", opts)
+
+-- Normal mode duplicate (leader-based)
+vim.keymap.set("n", "<leader>mh", "<Plug>GoNSDLeft", opts)
+vim.keymap.set("n", "<leader>mj", "<Plug>GoNSDDown", opts)
+vim.keymap.set("n", "<leader>mk", "<Plug>GoNSDUp", opts)
+vim.keymap.set("n", "<leader>ml", "<Plug>GoNSDRight", opts)
+
+-- Visual mode duplicate (leader-based)
+vim.keymap.set("x", "<leader>mh", "<Plug>GoVSDLeft", opts)
+vim.keymap.set("x", "<leader>mj", "<Plug>GoVSDDown", opts)
+vim.keymap.set("x", "<leader>mk", "<Plug>GoVSDUp", opts)
+vim.keymap.set("x", "<leader>ml", "<Plug>GoVSDRight", opts)

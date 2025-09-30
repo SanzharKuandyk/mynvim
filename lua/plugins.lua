@@ -133,7 +133,7 @@ require("lazy").setup({
         dependencies = { "nvim-telescope/telescope.nvim" },
     },
     -- Move Line and Blocks
-    { "fedepujol/move.nvim", event = "VeryLazy" },
+    { "booperlv/nvim-gomove", event = "VeryLazy" },
     -- Navigation
     {
         "ThePrimeagen/harpoon",
@@ -353,6 +353,69 @@ require("lazy").setup({
 
         opts_extend = { "sources.default" },
     },
+    --{
+    --    "piersolenski/wtf.nvim",
+    --    dependencies = {
+    --        "nvim-lua/plenary.nvim",
+    --        "MunifTanjim/nui.nvim",
+    --        -- Optional: For WtfGrepHistory (pick one)
+    --        "nvim-telescope/telescope.nvim",
+    --        -- "folke/snacks.nvim",
+    --        -- "ibhagwan/fzf-lua",
+    --    },
+    --    opts = {},
+    --    keys = {
+    --        {
+    --            "<leader>wd",
+    --            mode = { "n", "x" },
+    --            function()
+    --                require("wtf").diagnose()
+    --            end,
+    --            desc = "Debug diagnostic with AI",
+    --        },
+    --        {
+    --            "<leader>wf",
+    --            mode = { "n", "x" },
+    --            function()
+    --                require("wtf").fix()
+    --            end,
+    --            desc = "Fix diagnostic with AI",
+    --        },
+    --        {
+    --            mode = { "n" },
+    --            "<leader>ws",
+    --            function()
+    --                require("wtf").search()
+    --            end,
+    --            desc = "Search diagnostic with Google",
+    --        },
+    --        {
+    --            mode = { "n" },
+    --            "<leader>wp",
+    --            function()
+    --                require("wtf").pick_provider()
+    --            end,
+    --            desc = "Pick provider",
+    --        },
+    --        {
+    --            mode = { "n" },
+    --            "<leader>wh",
+    --            function()
+    --                require("wtf").history()
+    --            end,
+    --            desc = "Populate the quickfix list with previous chat history",
+    --        },
+    --        {
+    --            mode = { "n" },
+    --            "<leader>wg",
+    --            function()
+    --                require("wtf").grep_history()
+    --            end,
+    --            desc = "Grep previous chat history with Telescope",
+    --        },
+    --    },
+    --},
+
     -- Godot support
     { "lommix/godot.nvim" },
     -- Rust support
@@ -379,16 +442,16 @@ require("lazy").setup({
     -- Devicons
     { "ryanoasis/vim-devicons", event = "VeryLazy" },
     -- Toggl Track
-    {
-        "sanzharkuandyk/toggl-track.nvim",
-        config = function()
-            require("toggl-track").setup({
-                api_token = env.TOGGL_API_TOKEN,
-                picker = "telescope",
-            })
-        end,
-        dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
-    },
+    --{
+    --    "sanzharkuandyk/toggl-track.nvim",
+    --    config = function()
+    --        require("toggl-track").setup({
+    --            api_token = env.TOGGL_API_TOKEN,
+    --            picker = "telescope",
+    --        })
+    --    end,
+    --    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    --},
 
     -- Disable some rtp plugins
     performance = {
