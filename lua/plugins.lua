@@ -320,10 +320,30 @@ require("lazy").setup({
             signature = { enabled = true },
 
             completion = {
+                keyword = { range = "full" },
+
                 trigger = {
                     prefetch_on_insert = true,
                     show_on_keyword = true,
                 },
+
+                documentation = { auto_show = true, auto_show_delay_ms = 500 },
+
+                menu = {
+                    -- Don't automatically show the completion menu
+                    auto_show = true,
+
+                    -- nvim-cmp style menu
+                    draw = {
+                        columns = {
+                            { "label", "label_description", gap = 1 },
+                            { "kind_icon", "kind", gap = 2 },
+                        },
+                    },
+                },
+
+                -- Display a preview of the selected item on the current line
+                ghost_text = { enabled = true },
             },
 
             cmdline = {
@@ -337,7 +357,7 @@ require("lazy").setup({
     { "lommix/godot.nvim" },
     -- Rust support
     { "rust-lang/rust.vim", event = "VeryLazy" },
-    { "mrcjkb/rustaceanvim", version = "^4", ft = { "rust" }, event = "VeryLazy" },
+    { "mrcjkb/rustaceanvim", version = "^6", lazy = false },
     -- TypeScript support
     {
         "pmizio/typescript-tools.nvim",

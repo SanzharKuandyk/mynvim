@@ -4,15 +4,9 @@ vim.g.rustaceanvim = {
     -- LSP configuration
     server = {
         on_attach = function(client, bufnr)
-            -- Enable inlay hints
-            vim.api.nvim_create_augroup("lsp_augroup", { clear = true })
-            vim.api.nvim_create_autocmd("BufEnter", {
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.inlay_hint.enable(true, table)
-                end,
-                group = "lsp_augroup",
-            })
+            if vim.lsp.buf.inlay_hint then
+                vim.lsp.buf.inlay_hint(bufnr, true)
+            end
         end,
         default_settings = {
             -- rust-analyzer language server configuration
