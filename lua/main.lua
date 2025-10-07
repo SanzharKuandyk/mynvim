@@ -20,6 +20,8 @@ vim.cmd([[
     set noshowmode
     set updatetime=650
     set iskeyword-=_ 
+    set encoding=utf-8
+    set fileencoding=utf-8
     let mapleader=" "
     inoremap jk <Esc>
     vnoremap vjk <Esc>
