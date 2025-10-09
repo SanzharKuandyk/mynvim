@@ -98,10 +98,6 @@ vim.api.nvim_set_keymap("n", "r", '"_r', { noremap = true })
 vim.api.nvim_set_keymap("v", "c", '"_c', { noremap = true })
 vim.api.nvim_set_keymap("v", "d", '"_d', { noremap = true })
 
--- Key mappings to zoom in and out
-vim.api.nvim_set_keymap("n", "<C-=>", ":lua change_font_size(1)<CR>", { noremap = true, silent = true }) -- Zoom in
-vim.api.nvim_set_keymap("n", "<C-->", ":lua change_font_size(-1)<CR>", { noremap = true, silent = true }) -- Zoom out
-
 -- Clipboard settings
 vim.opt.clipboard:append("unnamedplus")
 

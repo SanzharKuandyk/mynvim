@@ -94,7 +94,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         local bufnr = ev.buf
-        buf_map(bufnr, "n", "gd", "<cmd>lua require('telescope.builtin').lsp_definitions()<CR>")
+        buf_map(bufnr, "n", "gd", "<cmd>Trouble lsp_definitions<CR>")
         buf_map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
         buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
         buf_map(bufnr, "n", "S", "<cmd>lua vim.lsp.buf.hover()<CR>")
