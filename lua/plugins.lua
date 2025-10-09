@@ -63,7 +63,10 @@ require("lazy").setup({
             })
         end,
     },
-
+    -- Better Yank
+    {
+        "gbprod/yanky.nvim",
+    },
     -- vim notify
     {
         "rcarriga/nvim-notify",
@@ -245,6 +248,7 @@ require("lazy").setup({
     },
     {
         "folke/trouble.nvim",
+        event = "VeryLazy",
         cmd = { "Trouble", "TroubleToggle" },
         keys = {
             { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },

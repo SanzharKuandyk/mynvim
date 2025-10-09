@@ -21,7 +21,6 @@ vim.cmd([[
     set updatetime=650
     set iskeyword-=_ 
     set encoding=utf-8
-    set fileencoding=utf-8
     let mapleader=" "
     inoremap jk <Esc>
     vnoremap vjk <Esc>
@@ -90,13 +89,6 @@ vim.api.nvim_set_keymap("n", "<leader>lp", ":lprev<CR>", { noremap = true, silen
 -- Switch to next buffer/tab
 vim.api.nvim_set_keymap("n", "<leader>n", ":bnext<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>p", ":bprev<CR>", { noremap = true })
-
--- Replace character in normal mode without yanking
-vim.api.nvim_set_keymap("n", "r", '"_r', { noremap = true })
-
--- Replace selection in visual mode without yanking
-vim.api.nvim_set_keymap("v", "c", '"_c', { noremap = true })
-vim.api.nvim_set_keymap("v", "d", '"_d', { noremap = true })
 
 -- Clipboard settings
 vim.opt.clipboard:append("unnamedplus")
