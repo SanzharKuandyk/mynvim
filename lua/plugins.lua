@@ -199,13 +199,6 @@ require("lazy").setup({
     },
     { "dasupradyumna/midnight.nvim", event = "VeryLazy" },
     { "folke/twilight.nvim", event = "VeryLazy" },
-    -- Buffer line
-    {
-        "akinsho/bufferline.nvim",
-        version = "*",
-        event = "VeryLazy",
-        dependencies = "nvim-tree/nvim-web-devicons",
-    },
     { "famiu/bufdelete.nvim", event = "VeryLazy" },
     -- Linting
     { "mfussenegger/nvim-lint", event = "VeryLazy" },
@@ -397,10 +390,7 @@ require("lazy").setup({
     --    },
     --},
 
-    -- Godot support
-    { "lommix/godot.nvim" },
     -- Rust support
-    { "rust-lang/rust.vim", event = "VeryLazy" },
     { "mrcjkb/rustaceanvim", version = "^6", lazy = false },
     -- TypeScript support
     {
@@ -409,7 +399,6 @@ require("lazy").setup({
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         opts = {},
     },
-    { "leafgarland/typescript-vim", event = "VeryLazy" },
     -- Commands work with Russian keyboard layout
     { "powerman/vim-plugin-ruscmd", event = "VeryLazy" },
     -- Markdown preview
