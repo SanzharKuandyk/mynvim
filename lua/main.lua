@@ -1,32 +1,45 @@
--- Set encoding to UTF-8
-vim.opt.encoding = "UTF-8"
+-- Encoding & UI
+vim.opt.encoding = "utf-8"
+vim.opt.fileencoding = "utf-8"
 vim.opt.termguicolors = true
-
 vim.o.guifont = "UbuntuSansMono\\ NF:h11"
+
+-- Searching
 vim.opt.incsearch = true
 vim.opt.hlsearch = true
-vim.o.wrap = false
 
--- General Settings
-vim.cmd([[
-    set number
-    set relativenumber
-    set smarttab
-    set cindent
-    set tabstop=2
-    set shiftwidth=2
-    set expandtab
-    set mouse=a
-    set noshowmode
-    set updatetime=650
-    set iskeyword-=_ 
-    set encoding=utf-8
-    let mapleader=" "
-    inoremap jk <Esc>
-    vnoremap vjk <Esc>
-    tnoremap jk <C-\><C-n>
-    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-]])
+-- Display
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.wrap = false
+
+-- Indentation
+vim.opt.smarttab = true
+vim.opt.cindent = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
+-- Behavior
+vim.opt.mouse = "a"
+vim.opt.showmode = false
+vim.opt.updatetime = 650
+vim.g.mapleader = " "
+
+-- Disable auto-comments on newlines
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    command = "setlocal formatoptions-=c formatoptions-=r formatoptions-=o",
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+    pattern = "*",
+    callback = function()
+        if vim.loop.os_uname().sysname:match("Windows") then
+            vim.bo.fileformat = "dos"
+        end
+    end,
+})
 
 vim.api.nvim_create_autocmd("DirChanged", {
     callback = function()
@@ -39,6 +52,11 @@ vim.api.nvim_create_autocmd("DirChanged", {
 -- Theme
 vim.g.nagisa_transparent = false
 vim.cmd.colorscheme("EndOfTheWorld")
+
+--Mode switch mappings
+vim.keymap.set("i", "jk", "<Esc>")
+vim.keymap.set("v", "vjk", "<Esc>")
+vim.keymap.set("t", "jk", "<C-\\><C-n>")
 
 -- File Saving
 vim.api.nvim_set_keymap("n", "<C-s>", ":w<CR>", { noremap = true })

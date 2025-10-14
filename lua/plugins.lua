@@ -106,7 +106,6 @@ require("lazy").setup({
     },
     -- Git integration
     { "lewis6991/gitsigns.nvim", event = "VeryLazy" },
-    { "dinhhuy258/git.nvim", event = "VeryLazy" },
     {
         "NeogitOrg/neogit",
         event = "VeryLazy",
