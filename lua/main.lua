@@ -32,15 +32,6 @@ vim.api.nvim_create_autocmd("FileType", {
     command = "setlocal formatoptions-=c formatoptions-=r formatoptions-=o",
 })
 
-vim.api.nvim_create_autocmd("BufReadPost", {
-    pattern = "*",
-    callback = function()
-        if vim.loop.os_uname().sysname:match("Windows") then
-            vim.bo.fileformat = "dos"
-        end
-    end,
-})
-
 vim.api.nvim_create_autocmd("DirChanged", {
     callback = function()
         local cwd = vim.fn.getcwd()
