@@ -4,10 +4,8 @@ require("typescript-tools").setup({
     end,
     handlers = {},
     filetypes = {
-        "javascript",
         "javascriptreact",
         "javascript.jsx",
-        "typescript",
         "typescriptreact",
         "typescript.tsx",
         "vue",

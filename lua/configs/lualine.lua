@@ -9,7 +9,6 @@ require("lualine").setup({
                 "neo-tree",
             },
             winbar = {
-
                 "neo-tree",
             },
         },
@@ -25,7 +24,17 @@ require("lualine").setup({
     sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff", "diagnostics" },
-        lualine_c = { "filename", "harpoon2" },
+        lualine_c = {
+            "filename",
+            "harpoon2",
+            {
+                function()
+                    return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+                end,
+                icon = "",
+                separator = "",
+            },
+        },
         lualine_x = { "encoding", "fileformat", "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" },
