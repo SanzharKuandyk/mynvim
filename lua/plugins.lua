@@ -39,6 +39,11 @@ require("lazy").setup({
             require("nvim-surround").setup({})
         end,
     },
+    -- Smear effect on cursor
+    {
+        "sphamba/smear-cursor.nvim",
+        opts = {},
+    },
     {
         "nvim-pack/nvim-spectre",
         event = "VeryLazy",
@@ -268,7 +273,7 @@ require("lazy").setup({
     -- New Completion Setup (blink-cmp)
     {
         "saghen/blink.cmp",
-        dependencies = { "rafamadriz/friendly-snippets", { "L3MON4D3/LuaSnip", version = "v2.*," } },
+        dependencies = { "rafamadriz/friendly-snippets" },
         event = "VeryLazy",
         version = "*",
 
@@ -282,10 +287,6 @@ require("lazy").setup({
 
             sources = {
                 default = { "lsp", "path", "snippets", "buffer" },
-            },
-
-            snippets = {
-                preset = "luasnip",
             },
 
             fuzzy = { implementation = "prefer_rust_with_warning" },
