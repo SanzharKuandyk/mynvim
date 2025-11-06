@@ -8,7 +8,6 @@ require("typescript-tools").setup({
         "javascript.jsx",
         "typescriptreact",
         "typescript.tsx",
-        "vue",
     },
     settings = {
         separate_diagnostic_server = true,
