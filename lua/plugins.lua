@@ -40,10 +40,10 @@ require("lazy").setup({
         end,
     },
     -- Smear effect on cursor
-    {
-        "sphamba/smear-cursor.nvim",
-        opts = {},
-    },
+    --{
+    --    "sphamba/smear-cursor.nvim",
+    --    opts = {},
+    --},
     {
         "nvim-pack/nvim-spectre",
         event = "VeryLazy",
