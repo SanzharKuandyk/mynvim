@@ -349,6 +349,13 @@ require("lazy").setup({
     },
     -- Devicons
     { "ryanoasis/vim-devicons", event = "VeryLazy" },
+    -- AMP ai cli
+    {
+        "sourcegraph/amp.nvim",
+        branch = "main",
+        lazy = false,
+        opts = { auto_start = false, log_level = "info" },
+    },
     -- Toggl Track
     --{
     --    "sanzharkuandyk/toggl-track.nvim",
