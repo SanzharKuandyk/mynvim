@@ -2,7 +2,7 @@ require("mason").setup()
 require("mason-lspconfig").setup({
     ensure_installed = { "clangd", "vue_ls" },
     automatic_installation = false,
-    automatic_enable = true,
+    automatic_enable = false,
 })
 
 local lsp = vim.lsp
@@ -27,14 +27,21 @@ if is_executable("clangd") then
     table.insert(enabled_servers, "clangd")
 end
 
--- gdscript (TCP connection, so check port availability instead of executable)
 local function is_port_open(host, port)
-    local socket = vim.loop.new_tcp()
-    local ok = socket:connect(host, port)
-    socket:close()
-    return ok
+    local tcp = vim.uv.new_tcp()
+    if not tcp then
+        return false
+    end
+    local connected = false
+    tcp:connect(host, port, function(err)
+        connected = not err
+    end)
+    vim.uv.run("nowait")
+    tcp:close()
+    return connected
 end
 
+-- gdscript (TCP connection, check if Godot LSP is running)
 if is_port_open("127.0.0.1", 6005) then
     lsp.config("gdscript", {
         cmd = lsp.rpc.connect("127.0.0.1", 6005),
@@ -63,8 +70,9 @@ if is_executable("dart") then
     table.insert(enabled_servers, "dartls")
 end
 
--- vue_ls
-if is_executable("vue-language-server") then
+-- vue_ls (only for projects with tsconfig)
+local vue_root = vim.fs.root(0, { "tsconfig.json" })
+if is_executable("vue-language-server") and vue_root then
     lsp.config("vue_ls", {
         init_options = {
             vue = {
