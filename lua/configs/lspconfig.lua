@@ -1,6 +1,6 @@
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "clangd", "vue_ls" },
+    ensure_installed = { "clangd", "vue_ls", "lua_ls" },
     automatic_installation = false,
     automatic_enable = false,
 })
@@ -82,6 +82,24 @@ if is_executable("vue-language-server") and vue_root then
         capabilities = capabilities,
     })
     table.insert(enabled_servers, "vue_ls")
+end
+
+-- lua_ls
+if is_executable("lua-language-server") then
+    lsp.config("lua_ls", {
+        settings = {
+            Lua = {
+                diagnostics = {
+                    globals = { "vim" },
+                },
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true),
+                },
+            },
+        },
+        capabilities = capabilities,
+    })
+    table.insert(enabled_servers, "lua_ls")
 end
 
 -- Enable only servers that exist

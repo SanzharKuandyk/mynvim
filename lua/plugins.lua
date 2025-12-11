@@ -129,11 +129,11 @@ require("lazy").setup({
     {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.8",
-        event = "VeryLazy",
-        dependencies = { { "nvim-lua/plenary.nvim", event = "VeryLazy" } },
+        cmd = "Telescope",
+        dependencies = { "nvim-lua/plenary.nvim" },
     },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make", event = "VeryLazy" },
-    { "nvim-telescope/telescope-project.nvim", event = "VeryLazy" },
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true },
+    { "nvim-telescope/telescope-project.nvim", lazy = true },
     {
         "FabianWirth/search.nvim",
         event = "VeryLazy",

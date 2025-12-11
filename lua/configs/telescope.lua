@@ -22,6 +22,7 @@ telescope.setup({
             "--smart-case",
             "--hidden",
             "--trim",
+            "--glob=!.git",
         },
         file_ignore_patterns = {
             "%.uid",

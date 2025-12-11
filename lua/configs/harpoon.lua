@@ -1,32 +1,33 @@
 local harpoon = require("harpoon")
 harpoon:setup({})
 
-vim.keymap.set("n", "<C-a>", function()
+-- Jump to harpoon marks
+vim.keymap.set("n", "<leader>ja", function()
     harpoon:list():add()
 end)
-vim.keymap.set("n", "<C-p>", function()
+vim.keymap.set("n", "<leader>jm", function()
     harpoon.ui:toggle_quick_menu(harpoon:list())
 end)
 
--- Movement on harpooned buffers using Shift + numbers
-vim.keymap.set("n", "!", function()
+-- Jump to harpooned buffers
+vim.keymap.set("n", "<leader>j1", function()
     harpoon:list():select(1)
 end)
-vim.keymap.set("n", "@", function()
+vim.keymap.set("n", "<leader>j2", function()
     harpoon:list():select(2)
 end)
-vim.keymap.set("n", "#", function()
+vim.keymap.set("n", "<leader>j3", function()
     harpoon:list():select(3)
 end)
-vim.keymap.set("n", "$", function()
+vim.keymap.set("n", "<leader>j4", function()
     harpoon:list():select(4)
 end)
 
--- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "%", function()
+-- Toggle previous & next harpooned buffers
+vim.keymap.set("n", "<leader>jp", function()
     harpoon:list():prev()
 end)
-vim.keymap.set("n", "^", function()
+vim.keymap.set("n", "<leader>jn", function()
     harpoon:list():next()
 end)
 
