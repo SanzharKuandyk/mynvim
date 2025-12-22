@@ -337,8 +337,6 @@ require("lazy").setup({
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         opts = {},
     },
-    -- Commands work with Russian keyboard layout
-    { "powerman/vim-plugin-ruscmd", event = "VeryLazy" },
     -- Markdown preview
     {
         "iamcco/markdown-preview.nvim",
@@ -347,8 +345,6 @@ require("lazy").setup({
         end,
         event = "VeryLazy",
     },
-    -- Devicons
-    { "ryanoasis/vim-devicons", event = "VeryLazy" },
     -- AMP ai cli
     {
         "sourcegraph/amp.nvim",
