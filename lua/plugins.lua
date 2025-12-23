@@ -111,16 +111,6 @@ require("lazy").setup({
     },
     -- Git integration
     { "lewis6991/gitsigns.nvim", event = "VeryLazy" },
-    {
-        "NeogitOrg/neogit",
-        event = "VeryLazy",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "sindrets/diffview.nvim",
-            "nvim-telescope/telescope.nvim",
-        },
-        config = true,
-    },
 
     -- Package management
     { "williamboman/mason.nvim", event = "VeryLazy" },
