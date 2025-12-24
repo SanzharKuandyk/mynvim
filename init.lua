@@ -1,27 +1,33 @@
-require("plugins")
-require("main")
-require("configs.lspconfig")
-require("configs.telescope")
-require("configs.trouble")
-require("configs.buffers")
-require("configs.linting")
-require("configs.oil")
-require("configs.git")
-require("configs.formatting")
-require("configs.move")
-require("configs.yanky")
-require("configs.colorizer")
-require("configs.themery")
-require("configs.rustaceanvim")
-require("configs.typescript_tools")
-require("configs.zenmode")
-require("configs.harpoon")
-require("configs.transfer")
-require("configs.treesitter")
-require("configs.lualine")
-require("configs.tiny_inline_diagnostic")
-require("configs.marks")
-require("configs.dap")
-require("configs.godot")
-require("configs.goto-preview")
-require("configs.amp")
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Load basic settings before plugins
+require("core.options")
+require("core.keymaps")
+require("core.autocmds")
+
+-- Setup lazy.nvim and load all plugin specs from lua/plugins/
+require("lazy").setup("plugins", {
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "tohtml",
+                "tarPlugin",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
+})
