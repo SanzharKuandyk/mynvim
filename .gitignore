@@ -1,3 +1,7 @@
 plugin/
 .env
 /node_modules
+
+# Prevent incorrect Husky folders
+/run
+/--version
