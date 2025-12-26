@@ -1,4 +1,17 @@
 return {
+    -- Properly configures LuaLs for editing nvim config
+    {
+        "folke/lazydev.nvim",
+        ft = "lua", -- only load on lua files
+        opts = {
+            library = {
+                -- See the configuration section for more details
+                -- Load luvit types when the `vim.uv` word is found
+                { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            },
+        },
+    },
+
     -- Mason: LSP installer
     {
         "williamboman/mason.nvim",
@@ -113,7 +126,7 @@ return {
                     settings = {
                         Lua = {
                             diagnostics = {
-                                globals = { "vim" },
+                                globals = { "vim", "uv" },
                             },
                             workspace = {
                                 library = vim.api.nvim_get_runtime_file("", true),
