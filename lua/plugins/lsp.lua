@@ -174,6 +174,7 @@ return {
     -- Lsp progress ui
     {
         "j-hui/fidget.nvim",
+        event = "LspAttach",
         opts = {
             -- options
         },

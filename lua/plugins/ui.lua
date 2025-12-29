@@ -166,6 +166,7 @@ return {
     -- Icons
     {
         "nvim-tree/nvim-web-devicons",
-        lazy = true,
+        lazy = false, -- Required by Oil.nvim which loads immediately
+        priority = 999, -- Load before Oil.nvim
     },
 }
