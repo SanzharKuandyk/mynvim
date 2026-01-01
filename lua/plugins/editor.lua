@@ -7,6 +7,7 @@ return {
         config = function()
             require("nvim-treesitter.install").compilers = { "gcc" }
             require("nvim-treesitter.configs").setup({
+                ignore_install = {},
                 ensure_installed = {
                     "c",
                     "cpp",
@@ -29,6 +30,7 @@ return {
                     "gdshader",
                     "zig",
                 },
+                modules = {},
                 sync_install = false,
                 auto_install = true,
                 highlight = {
