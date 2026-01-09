@@ -248,7 +248,6 @@ return {
             { "<F10>", "<cmd>DapStepOver<CR>", desc = "DAP Step Over" },
             { "<F11>", "<cmd>DapStepInto<CR>", desc = "DAP Step Into" },
             { "<F12>", "<cmd>DapStepOut<CR>", desc = "DAP Step Out" },
-            { "<leader>db", "<cmd>DapToggleBreakpoint<CR>", desc = "DAP Toggle Breakpoint" },
         },
         config = function()
             local dap = require("dap")
