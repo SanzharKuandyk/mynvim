@@ -35,9 +35,9 @@ return {
                 auto_install = true,
                 highlight = {
                     enable = true,
-                    disable = function(lang, buf)
+                    disable = function(_, buf)
                         local max_filesize = 100 * 1024 -- 100 KB
-                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
                         if ok and stats and stats.size > max_filesize then
                             return true
                         end
@@ -229,41 +229,12 @@ return {
         end,
     },
 
-    -- Search and replace
+    -- Peek lines of buffer in non-obstructive way
     {
-        "nvim-pack/nvim-spectre",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        keys = {
-            {
-                "<leader>S",
-                function()
-                    require("spectre").toggle()
-                end,
-                desc = "Toggle Spectre",
-            },
-            {
-                "<leader>sw",
-                function()
-                    require("spectre").open_visual({ select_word = true })
-                end,
-                desc = "Search current word",
-            },
-            {
-                "<leader>sw",
-                function()
-                    require("spectre").open_visual()
-                end,
-                mode = "v",
-                desc = "Search current word",
-            },
-            {
-                "<leader>sp",
-                function()
-                    require("spectre").open_file_search({ select_word = true })
-                end,
-                desc = "Search on current file",
-            },
-        },
+        "nacro90/numb.nvim",
+        config = function()
+            require("numb").setup()
+        end,
     },
 
     -- Comment
