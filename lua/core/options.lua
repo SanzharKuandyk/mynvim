@@ -30,6 +30,7 @@ vim.opt.clipboard:append("unnamedplus")
 
 -- Leader key
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 
 -- Theme settings (colorscheme set after plugins load)
 vim.g.nagisa_transparent = false
