@@ -3,6 +3,7 @@ return {
         "SanzharKuandyk/subjoyer.nvim",
         dependencies = {
             "b0o/incline.nvim",
+            "MunifTanjim/nui.nvim",
         },
         config = function()
             require("subjoyer").setup()
