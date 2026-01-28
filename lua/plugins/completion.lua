@@ -21,7 +21,8 @@ return {
                         score_offset = 100, -- show at a higher priority than lsp
                     },
                 },
-                default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+                -- omitted snippets
+                default = { "lazydev", "lsp", "path", "buffer" },
             },
             fuzzy = { implementation = "prefer_rust_with_warning" },
             signature = { enabled = true },
