@@ -11,32 +11,54 @@ return {
         cmd = "Telescope",
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
-            { "<leader>fg", "<cmd>Telescope live_grep<CR>", desc = "Live grep" },
-            {
-                "<leader>fG",
-                function()
-                    require("telescope.builtin").live_grep({
-                        additional_args = function()
-                            return { "-F" }
-                        end,
-                    })
-                end,
-                desc = "Live grep (literal)",
-            },
-            {
-                "<leader>fw",
-                function()
-                    require("telescope.builtin").grep_string({
-                        additional_args = function()
-                            return { "-F" }
-                        end,
-                    })
-                end,
-                desc = "Grep word under cursor (literal)",
-            },
+            { "<leader>lfg", "<cmd>Telescope live_grep<CR>", desc = "Live grep" },
+            { "<leader>fg", "<cmd>Telescope live_grep<CR>", desc = "Live grep (literal)" },
+            { "<leader>fw", "<cmd>Telescope grep_string<CR>", desc = "Grep word under cursor (literal)" },
             { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
             { "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help tags" },
-            { "<leader>fc", "<cmd>Telescope git_status<CR>", desc = "Git status" },
+            {
+                "<leader>fc",
+                function()
+                    local pickers = require("telescope.pickers")
+                    local finders = require("telescope.finders")
+                    local conf = require("telescope.config").values
+                    local Path = require("plenary.path")
+
+                    local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+                    if not git_root or git_root == "" then
+                        vim.notify("Not a git repository", vim.log.levels.WARN)
+                        return
+                    end
+
+                    local results = vim.fn.systemlist("git status --porcelain=v1")
+
+                    pickers
+                        .new({}, {
+                            prompt_title = "Git Status",
+                            finder = finders.new_table({
+                                results = results,
+                                entry_maker = function(line)
+                                    local status = line:sub(1, 2)
+                                    local path = line:sub(4)
+
+                                    local rel = Path:new(path):make_relative(git_root)
+
+                                    return {
+                                        value = path,
+                                        ordinal = path,
+                                        display = status .. " " .. rel,
+                                        path = path,
+                                        status = status,
+                                    }
+                                end,
+                            }),
+                            sorter = conf.generic_sorter({}),
+                            previewer = conf.file_previewer({}),
+                        })
+                        :find()
+                end,
+                desc = "Git status (relative paths)",
+            },
             { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Current buffer fuzzy find" },
             {
                 "<leader>fp",
@@ -79,6 +101,7 @@ return {
                         "--hidden",
                         "--trim",
                         "--glob=!.git",
+                        "-F",
                     },
                     file_ignore_patterns = {
                         "%.uid",
