@@ -4,7 +4,7 @@ return {
         -- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
         -- additional lazy config to defer loading is not really needed...
         keys = {
-            { "<leader>gf", "<cmd>GrugFar<CR>", desc = "GrugFar", mode = "n", noremap = true, silent = true },
+            { "<leader>gf", "<cmd>GrugFar<CR>", desc = "GrugFar", mode = { "n", "v" }, noremap = true, silent = true },
         },
         config = function()
             -- optional setup call to override plugin options

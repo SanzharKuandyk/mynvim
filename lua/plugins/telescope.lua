@@ -82,13 +82,34 @@ return {
                     },
                     file_ignore_patterns = {
                         "%.uid",
+
+                        -- generic *.lock
+                        "%.lock$",
+
+                        -- JS / Node
+                        "package%-lock%.json$",
+                        "yarn%.lock$",
+                        "pnpm%-lock%.yaml$",
+
+                        -- Rust
+                        "Cargo%.lock$",
+
+                        -- Go
+                        "go%.sum$",
+
+                        -- Python
+                        "Pipfile%.lock$",
+                        "poetry%.lock$",
                     },
                     mappings = {
                         i = { ["<c-t>"] = open_with_trouble },
                         n = { ["<c-t>"] = open_with_trouble },
                     },
                     path_display = {
-                        "smart",
+                        "filename_first",
+                        {
+                            truncate = 6, -- increase if your folders are deep
+                        },
                     },
                 },
                 extensions = {
