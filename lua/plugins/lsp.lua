@@ -161,10 +161,35 @@ return {
                     buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
                     buf_map(bufnr, "n", "S", "<cmd>lua vim.lsp.buf.hover()<CR>")
                     buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+                    buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
                     buf_map(bufnr, "n", "<leader>sh", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
                     buf_map(bufnr, "n", "<leader>of", "<cmd>lua vim.diagnostic.open_float()<CR>")
                     buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
                     buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
+                    buf_map(
+                        bufnr,
+                        "n",
+                        "[e",
+                        "<cmd>lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })<CR>"
+                    )
+                    buf_map(
+                        bufnr,
+                        "n",
+                        "]e",
+                        "<cmd>lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })<CR>"
+                    )
+                    buf_map(
+                        bufnr,
+                        "n",
+                        "[w",
+                        "<cmd>lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })<CR>"
+                    )
+                    buf_map(
+                        bufnr,
+                        "n",
+                        "]w",
+                        "<cmd>lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })<CR>"
+                    )
                 end,
             })
         end,
@@ -182,16 +207,27 @@ return {
     -- Rust tools
     {
         "mrcjkb/rustaceanvim",
-        version = "^6",
+        version = "^7",
         ft = { "rust" },
         config = function()
             vim.g.rustaceanvim = {
                 tools = {},
                 server = {
-                    on_attach = function(client, bufnr) end,
+                    on_attach = function(client, bufnr)
+                        -- Rust-specific code action (grouped UI, better for imports)
+                        vim.keymap.set("n", "<leader>ca", function()
+                            vim.cmd.RustLsp("codeAction")
+                        end, { silent = true, buffer = bufnr, desc = "Rust code action" })
+                    end,
                     default_settings = {
                         ["rust-analyzer"] = {
-                            imports = { granularity = { group = "module" }, prefix = "self" },
+                            imports = {
+                                granularity = { group = "module" },
+                                prefix = "plain",
+                            },
+                            completion = {
+                                autoimport = { enable = true },
+                            },
                         },
                     },
                 },
