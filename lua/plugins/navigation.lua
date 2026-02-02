@@ -98,39 +98,37 @@ return {
         "stevearc/oil.nvim",
         lazy = false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        keys = {
-            { "<C-b>", "<cmd>Oil<CR>", desc = "Oil file browser", mode = "n", noremap = true, silent = true },
-            {
+        config = function()
+            require("oil").setup({
+                keymaps = {
+                    ["g?"] = { "actions.show_help", mode = "n" },
+                    ["<CR>"] = "actions.select",
+                    ["."] = "actions.select",
+                    ["dv"] = { "actions.select", opts = { vertical = true } },
+                    ["dh"] = { "actions.select", opts = { horizontal = true } },
+                    ["<C-t>"] = { "actions.select", opts = { tab = true } },
+                    ["<C-p>"] = "actions.preview",
+                    ["<C-c>"] = { "actions.close", mode = "n" },
+                    ["<C-n>"] = "actions.refresh",
+                    ["-"] = { "actions.parent", mode = "n" },
+                    ["_"] = { "actions.open_cwd", mode = "n" },
+                    ["`"] = { "actions.cd", mode = "n" },
+                    ["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
+                    ["gs"] = { "actions.change_sort", mode = "n" },
+                    ["gx"] = "actions.open_external",
+                    ["g."] = { "actions.toggle_hidden", mode = "n" },
+                    ["g\\"] = { "actions.toggle_trash", mode = "n" },
+                },
+                use_default_keymaps = false,
+            })
+            vim.keymap.set("n", "<C-b>", "<cmd>Oil<CR>", { desc = "Oil file browser", noremap = true, silent = true })
+            vim.keymap.set(
+                { "n", "v" },
                 "<leader>-",
-                ":<C-U>Oil<CR>",
-                desc = "Oil parent directory",
-                mode = { "n", "v" },
-                noremap = true,
-                silent = true,
-            },
-        },
-        opts = {
-            keymaps = {
-                ["g?"] = { "actions.show_help", mode = "n" },
-                ["<CR>"] = "actions.select",
-                ["."] = "actions.select",
-                ["dv"] = { "actions.select", opts = { vertical = true } },
-                ["dh"] = { "actions.select", opts = { horizontal = true } },
-                ["<C-t>"] = { "actions.select", opts = { tab = true } },
-                ["<C-p>"] = "actions.preview",
-                ["<C-c>"] = { "actions.close", mode = "n" },
-                ["<C-n>"] = "actions.refresh",
-                ["-"] = { "actions.parent", mode = "n" },
-                ["_"] = { "actions.open_cwd", mode = "n" },
-                ["`"] = { "actions.cd", mode = "n" },
-                ["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
-                ["gs"] = { "actions.change_sort", mode = "n" },
-                ["gx"] = "actions.open_external",
-                ["g."] = { "actions.toggle_hidden", mode = "n" },
-                ["g\\"] = { "actions.toggle_trash", mode = "n" },
-            },
-            use_default_keymaps = false,
-        },
+                "<cmd>Oil<CR>",
+                { desc = "Oil parent directory", noremap = true, silent = true }
+            )
+        end,
     },
 
     -- Better marks
