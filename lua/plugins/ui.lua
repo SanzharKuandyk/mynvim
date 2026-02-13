@@ -96,6 +96,22 @@ return {
     {
         "j-morano/buffer_manager.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("buffer_manager").setup({
+                format_function = function(buf_name)
+                    local cwd = vim.fn.getcwd()
+                    local norm_buf = buf_name:gsub("\\", "/")
+                    local norm_cwd = cwd:gsub("\\", "/")
+                    if norm_cwd:sub(-1) ~= "/" then
+                        norm_cwd = norm_cwd .. "/"
+                    end
+                    if norm_buf:lower():sub(1, #norm_cwd) == norm_cwd:lower() then
+                        return norm_buf:sub(#norm_cwd + 1)
+                    end
+                    return norm_buf
+                end,
+            })
+        end,
         keys = {
             {
                 "bl",
