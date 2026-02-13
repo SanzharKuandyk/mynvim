@@ -44,6 +44,15 @@ return {
             local lsp = vim.lsp
             local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+            vim.diagnostic.config({
+                float = {
+                    border = "rounded",
+                    max_width = nil,
+                    max_height = nil,
+                    padding = { 1, 1, 1, 1 },
+                },
+            })
+
             -- Helper: check if executable exists
             local function is_executable(cmd)
                 return vim.fn.executable(cmd) == 1
@@ -162,7 +171,7 @@ return {
                     buf_map(bufnr, "n", "S", "<cmd>lua vim.lsp.buf.hover()<CR>")
                     buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
                     buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-                    buf_map(bufnr, "n", "<leader>sh", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+                    buf_map(bufnr, "n", "<leader>sh", "<cmd>lua vim.schedule(vim.lsp.buf.signature_help)<CR>")
                     buf_map(bufnr, "n", "<leader>of", "<cmd>lua vim.diagnostic.open_float()<CR>")
                     buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
                     buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
@@ -208,13 +217,11 @@ return {
     {
         "mrcjkb/rustaceanvim",
         version = "^7",
-        ft = { "rust" },
         config = function()
             vim.g.rustaceanvim = {
                 tools = {},
                 server = {
                     on_attach = function(client, bufnr)
-                        -- Rust-specific code action (grouped UI, better for imports)
                         vim.keymap.set("n", "<leader>ca", function()
                             vim.cmd.RustLsp("codeAction")
                         end, { silent = true, buffer = bufnr, desc = "Rust code action" })
@@ -233,6 +240,17 @@ return {
                 },
                 dap = {},
             }
+
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "RustaceanvimLoaded",
+                callback = function()
+                    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                        if vim.bo[buf].filetype == "rust" and vim.bo[buf].buflisted then
+                            vim.cmd("LspStart rust_analyzer")
+                        end
+                    end
+                end,
+            })
         end,
     },
 
