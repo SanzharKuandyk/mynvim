@@ -27,7 +27,7 @@ return {
             fuzzy = { implementation = "prefer_rust_with_warning" },
             signature = { enabled = true },
             completion = {
-                keyword = { range = "full" },
+                keyword = { range = "prefix" },
                 trigger = {
                     prefetch_on_insert = true,
                     show_on_keyword = true,
