@@ -16,6 +16,7 @@ return {
             { "<leader>fw", "<cmd>Telescope grep_string<CR>", desc = "Grep word under cursor (literal)" },
             { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
             { "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help tags" },
+            { "<leader>fr", "<cmd>Telescope resume<CR>", desc = "Resume last search" },
             {
                 "<leader>fc",
                 function()
