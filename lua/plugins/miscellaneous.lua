@@ -1,5 +1,13 @@
 return {
     {
+        "atiladefreitas/dooing",
+        config = function()
+            require("dooing").setup({
+                -- your custom config here (optional)
+            })
+        end,
+    },
+    {
         "SanzharKuandyk/subjoyer.nvim",
         dependencies = {
             "b0o/incline.nvim",
