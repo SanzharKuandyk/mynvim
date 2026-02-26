@@ -69,6 +69,15 @@ return {
         end,
     },
 
+    -- Indentation guides
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
+        ---@module "ibl"
+        ---@type ibl.config
+        opts = {},
+    },
+
     -- Linting
     {
         "mfussenegger/nvim-lint",
@@ -93,7 +102,7 @@ return {
                 end,
             })
 
-            vim.keymap.set("n", "<leader>l", function()
+            vim.keymap.set("n", "<leader>lc", function()
                 lint.try_lint()
             end, { desc = "Trigger linting for current file" })
         end,
