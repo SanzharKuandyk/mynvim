@@ -258,7 +258,6 @@ return {
     {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
         opts = {
             on_attach = function(client)
                 client.server_capabilities.semanticTokensProvider = nil
@@ -267,6 +266,7 @@ return {
             filetypes = {
                 "javascriptreact",
                 "javascript.jsx",
+                "typescript",
                 "typescriptreact",
                 "typescript.tsx",
             },
