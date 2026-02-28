@@ -70,13 +70,15 @@ return {
     },
 
     -- Indentation guides
-    {
-        "lukas-reineke/indent-blankline.nvim",
-        main = "ibl",
-        ---@module "ibl"
-        ---@type ibl.config
-        opts = {},
-    },
+    --{
+    --    "lukas-reineke/indent-blankline.nvim",
+    --    main = "ibl",
+    --    ---@module "ibl"
+    --    ---@type ibl.config
+    --    opts = {
+    --        scope = { enabled = true },
+    --    },
+    --},
 
     -- Linting
     {

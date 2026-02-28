@@ -213,6 +213,15 @@ return {
         },
     },
 
+    -- Garbage collector
+    {
+        "zeioth/garbage-day.nvim",
+        event = "VeryLazy",
+        opts = {
+            -- options
+        },
+    },
+
     -- Rust tools
     {
         "mrcjkb/rustaceanvim",
