@@ -1,18 +1,16 @@
 return {
-    -- Properly configures LuaLs for editing nvim config
+    -- Lua LSP for Neovim config
     {
         "folke/lazydev.nvim",
-        ft = "lua", -- only load on lua files
+        ft = "lua",
         opts = {
             library = {
-                -- See the configuration section for more details
-                -- Load luvit types when the `vim.uv` word is found
                 { path = "${3rd}/luv/library", words = { "vim%.uv" } },
             },
         },
     },
 
-    -- Mason: LSP installer
+    -- LSP installer
     {
         "williamboman/mason.nvim",
         cmd = "Mason",
@@ -20,233 +18,185 @@ return {
         opts = {},
     },
 
-    -- Mason LSP config bridge
+    -- Mason <-> lspconfig bridge
     {
         "williamboman/mason-lspconfig.nvim",
         dependencies = { "williamboman/mason.nvim" },
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            -- put zls and ols later
             ensure_installed = { "clangd", "lua_ls" },
             automatic_installation = false,
             automatic_enable = false,
         },
     },
 
-    -- LSP Configuration
+    -- LSP
     {
         "neovim/nvim-lspconfig",
-        dependencies = {
-            "williamboman/mason-lspconfig.nvim",
-            "saghen/blink.cmp",
-        },
+        dependencies = { "williamboman/mason-lspconfig.nvim", "saghen/blink.cmp" },
         event = { "BufReadPre", "BufNewFile" },
         config = function()
             local lsp = vim.lsp
-            local capabilities = require("blink.cmp").get_lsp_capabilities()
+            local caps = require("blink.cmp").get_lsp_capabilities()
 
             vim.diagnostic.config({
                 float = {
                     border = "rounded",
-                    max_width = nil,
-                    max_height = nil,
                     padding = { 1, 1, 1, 1 },
                 },
             })
 
-            -- Helper: check if executable exists
-            local function is_executable(cmd)
+            -- Helper to check if exe exists
+            local function exe(cmd)
                 return vim.fn.executable(cmd) == 1
             end
 
-            -- Collect enabled servers dynamically
-            local enabled_servers = {}
-
-            -- clangd
-            if is_executable("clangd") then
-                lsp.config("clangd", {
-                    cmd = { "clangd", "--background-index" },
-                    filetypes = { "c", "cpp", "objc", "objcpp" },
-                    root_dir = vim.fs.root(0, { "compile_commands.json", "compile_flags.txt", ".git" }),
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "clangd")
-            end
-
-            if is_executable("zls") then
-                lsp.config("zls", {
-                    cmd = { "zls" },
-                    filetypes = { "zig" },
-                    root_dir = vim.fs.root(0, { "build.zig", ".git" }),
-                })
-                table.insert(enabled_servers, "zls")
-            end
-
-            -- ols (oding lang)
-            if is_executable("ols") then
-                lsp.config("ols", {
-                    init_options = {
-                        checker_args = "-strict-style",
-                        collections = {
-                            { name = "shared", path = vim.fn.expand("$HOME/odin-lib") },
-                        },
-                    },
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "ols")
-            end
-
-            local function is_port_open(host, port)
+            -- Helper to check if port is open
+            local function port_open(host, port)
                 local tcp = vim.uv.new_tcp()
                 if not tcp then
                     return false
                 end
-                local connected = false
+                local ok = false
                 tcp:connect(host, port, function(err)
-                    connected = not err
+                    ok = not err
                 end)
                 vim.uv.run("nowait")
                 tcp:close()
-                return connected
+                return ok
             end
 
-            -- gdscript (TCP connection, check if Godot LSP is running)
-            if is_port_open("127.0.0.1", 6005) then
-                lsp.config("gdscript", {
-                    cmd = lsp.rpc.connect("127.0.0.1", 6005),
-                    root_dir = vim.fs.root(0, { "project.godot", ".git" }),
-                    filetypes = { "gd", "gdscript", "gdscript3" },
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "gdscript")
+            -- Register a server if condition is met
+            local enabled = {}
+            local function server(cond, name, config)
+                if not cond then
+                    return
+                end
+                lsp.config(name, config)
+                enabled[#enabled + 1] = name
             end
 
-            -- dartls
-            if is_executable("dart") then
-                lsp.config("dartls", {
-                    settings = {
-                        dart = {
-                            analysisExcludedFolders = {
-                                vim.fn.expand("$HOME/.pub-cache"),
-                                vim.fn.expand("$HOME/flutter"),
-                            },
-                            updateImportsOnRename = true,
-                            completeFunctionCalls = true,
-                        },
+            -- Lua
+            server(exe("lua-language-server"), "lua_ls", {
+                settings = {
+                    Lua = {
+                        diagnostics = { globals = { "vim", "uv" } },
+                        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
                     },
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "dartls")
-            end
+                },
+                capabilities = caps,
+            })
 
-            -- vue_ls (only for projects with tsconfig)
-            local vue_root = vim.fs.root(0, { "tsconfig.json" })
-            if is_executable("vue-language-server") and vue_root then
-                lsp.config("vue_ls", {
-                    init_options = {
-                        vue = {
-                            hybridMode = false,
+            server(exe("clangd"), "clangd", {
+                cmd = { "clangd", "--background-index" },
+                filetypes = { "c", "cpp", "objc", "objcpp" },
+                root_dir = vim.fs.root(0, { "compile_commands.json", "compile_flags.txt", ".git" }),
+                capabilities = caps,
+            })
+
+            -- Zig
+            server(exe("zls"), "zls", {
+                cmd = { "zls" },
+                filetypes = { "zig" },
+                root_dir = vim.fs.root(0, { "build.zig", ".git" }),
+                capabilities = caps,
+            })
+
+            -- Odin
+            server(exe("ols"), "ols", {
+                init_options = {
+                    checker_args = "-strict-style",
+                    collections = { { name = "shared", path = vim.fn.expand("$HOME/odin-lib") } },
+                },
+                capabilities = caps,
+            })
+
+            -- Godot's gdscript
+            server(port_open("127.0.0.1", 6005), "gdscript", {
+                cmd = lsp.rpc.connect("127.0.0.1", 6005),
+                root_dir = vim.fs.root(0, { "project.godot", ".git" }),
+                filetypes = { "gd", "gdscript", "gdscript3" },
+                capabilities = caps,
+            })
+
+            server(exe("dart"), "dartls", {
+                settings = {
+                    dart = {
+                        analysisExcludedFolders = {
+                            vim.fn.expand("$HOME/.pub-cache"),
+                            vim.fn.expand("$HOME/flutter"),
                         },
+                        updateImportsOnRename = true,
+                        completeFunctionCalls = true,
                     },
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "vue_ls")
-            end
+                },
+                capabilities = caps,
+            })
 
-            -- lua_ls
-            if is_executable("lua-language-server") then
-                lsp.config("lua_ls", {
-                    settings = {
-                        Lua = {
-                            diagnostics = {
-                                globals = { "vim", "uv" },
-                            },
-                            workspace = {
-                                library = vim.api.nvim_get_runtime_file("", true),
-                            },
-                        },
-                    },
-                    capabilities = capabilities,
-                })
-                table.insert(enabled_servers, "lua_ls")
-            end
+            server(exe("vue-language-server") and vim.fs.root(0, { "tsconfig.json" }) ~= nil, "vue_ls", {
+                init_options = { vue = { hybridMode = false } },
+                capabilities = caps,
+            })
 
-            -- Enable only servers that exist
-            if #enabled_servers > 0 then
-                lsp.enable(enabled_servers)
-            end
-
-            -- Keybindings for LSP
-            local buf_map = function(bufnr, mode, lhs, rhs, opts)
-                vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or { silent = true })
+            if #enabled > 0 then
+                lsp.enable(enabled)
             end
 
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(ev)
-                    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-                    if client and client.server_capabilities and client.server_capabilities.semanticTokensProvider then
+                    local client = lsp.get_client_by_id(ev.data.client_id)
+                    local bufnr = ev.buf
+
+                    -- Prefer treesitter highlighting over semantic tokens
+                    if client and client.server_capabilities.semanticTokensProvider then
                         client.server_capabilities.semanticTokensProvider = nil
                     end
 
-                    local bufnr = ev.buf
-                    buf_map(bufnr, "n", "gd", "<cmd>Trouble lsp_definitions<CR>")
-                    buf_map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-                    buf_map(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-                    buf_map(bufnr, "n", "S", "<cmd>lua vim.lsp.buf.hover()<CR>")
-                    buf_map(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-                    buf_map(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-                    buf_map(bufnr, "n", "<leader>sh", "<cmd>lua vim.schedule(vim.lsp.buf.signature_help)<CR>")
-                    buf_map(bufnr, "n", "<leader>of", "<cmd>lua vim.diagnostic.open_float()<CR>")
-                    buf_map(bufnr, "n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-                    buf_map(bufnr, "n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-                    buf_map(
-                        bufnr,
-                        "n",
-                        "[e",
-                        "<cmd>lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })<CR>"
-                    )
-                    buf_map(
-                        bufnr,
-                        "n",
-                        "]e",
-                        "<cmd>lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })<CR>"
-                    )
-                    buf_map(
-                        bufnr,
-                        "n",
-                        "[w",
-                        "<cmd>lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })<CR>"
-                    )
-                    buf_map(
-                        bufnr,
-                        "n",
-                        "]w",
-                        "<cmd>lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })<CR>"
-                    )
+                    -- Inlay hints
+                    if client and client.supports_method("textDocument/inlayHint") then
+                        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                    end
+
+                    local map = function(lhs, rhs)
+                        vim.keymap.set("n", lhs, rhs, { silent = true, buffer = bufnr })
+                    end
+
+                    map("gd", "<cmd>Trouble lsp_definitions<CR>")
+                    map("gr", vim.lsp.buf.references)
+                    map("gi", vim.lsp.buf.implementation)
+                    map("S", vim.lsp.buf.hover)
+                    map("<leader>rn", vim.lsp.buf.rename)
+                    map("<leader>ca", vim.lsp.buf.code_action)
+                    map("<leader>sh", function()
+                        vim.schedule(vim.lsp.buf.signature_help)
+                    end)
+                    map("<leader>of", vim.diagnostic.open_float)
+                    map("[d", vim.diagnostic.goto_prev)
+                    map("]d", vim.diagnostic.goto_next)
+                    map("[e", function()
+                        vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+                    end)
+                    map("]e", function()
+                        vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+                    end)
+                    map("[w", function()
+                        vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+                    end)
+                    map("]w", function()
+                        vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+                    end)
                 end,
             })
         end,
     },
 
-    -- Lsp progress ui
-    {
-        "j-hui/fidget.nvim",
-        event = "LspAttach",
-        opts = {
-            -- options
-        },
-    },
+    -- LSP progress UI
+    { "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
 
-    -- Garbage collector
-    {
-        "zeioth/garbage-day.nvim",
-        event = "VeryLazy",
-        opts = {
-            -- options
-        },
-    },
+    -- LSP garbage collector
+    { "zeioth/garbage-day.nvim", event = "VeryLazy", opts = {} },
 
-    -- Rust tools
+    -- Rust
     {
         "mrcjkb/rustaceanvim",
         version = "^7",
@@ -254,7 +204,7 @@ return {
             vim.g.rustaceanvim = {
                 tools = {},
                 server = {
-                    on_attach = function(client, bufnr)
+                    on_attach = function(_, bufnr)
                         vim.keymap.set("n", "<leader>ca", function()
                             vim.cmd.RustLsp("codeAction")
                         end, { silent = true, buffer = bufnr, desc = "Rust code action" })
@@ -265,9 +215,7 @@ return {
                                 granularity = { group = "module" },
                                 prefix = "plain",
                             },
-                            completion = {
-                                autoimport = { enable = true },
-                            },
+                            completion = { autoimport = { enable = true } },
                         },
                     },
                 },
@@ -287,7 +235,7 @@ return {
         end,
     },
 
-    -- TypeScript tools
+    -- TypeScript
     {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -295,7 +243,6 @@ return {
             on_attach = function(client)
                 client.server_capabilities.semanticTokensProvider = nil
             end,
-            handlers = {},
             filetypes = {
                 "javascriptreact",
                 "javascript.jsx",
@@ -305,14 +252,12 @@ return {
             },
             settings = {
                 separate_diagnostic_server = true,
-                expose_as_code_action = {},
                 tsserver_plugins = {
                     "@styled/typescript-styled-plugin",
                     "@vue/language-server",
                     "@vue/typescript-plugin",
                 },
                 tsserver_max_memory = 2024,
-                tsserver_format_options = {},
                 tsserver_file_preferences = {
                     includeInlayParameterNameHints = "all",
                 },
@@ -325,7 +270,7 @@ return {
         },
     },
 
-    -- DAP (Debug Adapter Protocol)
+    -- DAP
     {
         "mfussenegger/nvim-dap",
         dependencies = { "rcarriga/nvim-dap-ui" },
@@ -337,12 +282,7 @@ return {
         },
         config = function()
             local dap = require("dap")
-            dap.adapters.godot = {
-                type = "server",
-                host = "127.0.0.1",
-                port = 6006,
-            }
-
+            dap.adapters.godot = { type = "server", host = "127.0.0.1", port = 6006 }
             dap.configurations.gdscript = {
                 {
                     type = "godot",
@@ -372,17 +312,15 @@ return {
             })
 
             local function get_godot_address()
-                local env_utils = require("utils.env")
-                local env = env_utils.Load_env() or {}
+                local env = require("utils.env").Load_env() or {}
                 return env["GODOT_ADDRESS"] or "127.0.0.1:55432"
             end
 
             local function is_address_in_use(address)
-                local ip, port = address:match("(.+):(%d+)")
-                local command = vim.fn.has("win32") == 1 and ("netstat -ano | findstr :" .. port)
-                    or ("ss -tuln | grep " .. ip .. ":" .. port)
-                local result = vim.fn.system(command)
-                return result ~= ""
+                local _, port = address:match("(.+):(%d+)")
+                local cmd = vim.fn.has("win32") == 1 and ("netstat -ano | findstr :" .. port)
+                    or ("ss -tuln | grep " .. address)
+                return vim.fn.system(cmd) ~= ""
             end
 
             local godot_connected = false
@@ -391,35 +329,33 @@ return {
                 if godot_connected then
                     return
                 end
-                local godot_project_file = vim.fn.getcwd() .. "/project.godot"
-                local gdproject = io.open(godot_project_file, "r")
-                if not gdproject then
+                local f = io.open(vim.fn.getcwd() .. "/project.godot", "r")
+                if not f then
                     return
                 end
-                io.close(gdproject)
-                local godot_address = address or get_godot_address()
-                if is_address_in_use(godot_address) then
-                    print("Address " .. godot_address .. " is already in use. Aborting connection.")
+                io.close(f)
+                local addr = address or get_godot_address()
+                if is_address_in_use(addr) then
+                    print("Address " .. addr .. " already in use")
                     return
                 end
-                vim.fn.serverstart(godot_address)
+                vim.fn.serverstart(addr)
                 godot_connected = true
-                print("Godot connection started at " .. godot_address)
+                print("Godot connection started at " .. addr)
             end
 
             local function stop_godot_connection()
-                local godot_address = get_godot_address()
-                vim.fn.serverstop(godot_address)
+                local addr = get_godot_address()
+                vim.fn.serverstop(addr)
                 for _, client in pairs(vim.lsp.get_clients({ name = "gdscript" })) do
                     vim.lsp.stop_client(client.id)
                 end
                 godot_connected = false
-                print("Godot connection and LSP stopped at " .. godot_address)
+                print("Godot connection stopped at " .. addr)
             end
 
             vim.api.nvim_create_user_command("StartGodotConnection", function(opts)
-                local address = opts.args ~= "" and opts.args or nil
-                start_godot_connection(address)
+                start_godot_connection(opts.args ~= "" and opts.args or nil)
             end, { nargs = "?" })
 
             vim.api.nvim_create_user_command("StopGodotConnection", stop_godot_connection, {})
@@ -436,13 +372,11 @@ return {
                 pattern = "*.gd",
                 callback = function()
                     local clients = vim.lsp.get_clients({ name = "gdscript" })
-                    if
-                        #clients == 0
-                        or vim.tbl_contains(clients, function(c)
-                            return c.is_stopped()
-                        end, { predicate = true })
-                    then
-                        print("GDScript LSP not running or stopped, starting connection...")
+                    local stopped = vim.tbl_contains(clients, function(c)
+                        return c.is_stopped()
+                    end, { predicate = true })
+                    if #clients == 0 or stopped then
+                        print("GDScript LSP not running, starting connection...")
                         start_godot_connection()
                     end
                 end,
@@ -458,21 +392,29 @@ return {
         end,
     },
 
-    -- Trouble: diagnostics viewer
+    -- Diagnostics viewer
     {
         "folke/trouble.nvim",
         cmd = "Trouble",
         keys = {
-            { "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>", desc = "Diagnostics (Trouble)" },
+            {
+                "<leader>xx",
+                "<cmd>Trouble diagnostics toggle<CR>",
+                desc = "Diagnostics (Trouble)",
+            },
             { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Buffer Diagnostics" },
             { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<CR>", desc = "Symbols (Trouble)" },
+            { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<CR>", desc = "LSP (Trouble)" },
             {
-                "<leader>cl",
-                "<cmd>Trouble lsp toggle focus=false win.position=right<CR>",
-                desc = "LSP Definitions / references / ... (Trouble)",
+                "<leader>xL",
+                "<cmd>Trouble loclist toggle<CR>",
+                desc = "Location List (Trouble)",
             },
-            { "<leader>xL", "<cmd>Trouble loclist toggle<CR>", desc = "Location List (Trouble)" },
-            { "<leader>xQ", "<cmd>Trouble qflist toggle<CR>", desc = "Quickfix List (Trouble)" },
+            {
+                "<leader>xQ",
+                "<cmd>Trouble qflist toggle<CR>",
+                desc = "Quickfix List (Trouble)",
+            },
         },
         opts = {
             auto_refresh = true,
@@ -485,22 +427,18 @@ return {
         "rachartier/tiny-inline-diagnostic.nvim",
         event = "LspAttach",
         config = function()
-            -- Disable virtual text by default
             vim.diagnostic.config({ virtual_text = false })
             require("tiny-inline-diagnostic").setup()
         end,
     },
 
-    -- Symbols
+    -- Symbol sidebar
     {
         "oskarrrrrrr/symbols.nvim",
         config = function()
             local r = require("symbols.recipes")
             require("symbols").setup(r.DefaultFilters, r.AsciiSymbols, {
-                sidebar = {
-                    -- custom settings here
-                    hide_cursor = false,
-                },
+                sidebar = { hide_cursor = false },
             })
             vim.keymap.set("n", ",s", "<cmd>Symbols<CR>")
             vim.keymap.set("n", ",S", "<cmd>SymbolsClose<CR>")
