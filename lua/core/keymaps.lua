@@ -3,6 +3,22 @@ vim.keymap.set("i", "jk", "<Esc>")
 vim.keymap.set("v", "vjk", "<Esc>")
 vim.keymap.set("t", "jk", "<C-\\><C-n>")
 
+-- On empty lines, re-apply cindent before entering insert mode.
+-- Vim strips auto-indent from whitespace-only lines on <Esc>, so 'i'/'a'
+-- would land at col 0. 'S' re-indents based on context (like cc).
+local function smart_insert(fallback)
+    if vim.v.count == 0 and vim.api.nvim_get_current_line() == "" then
+        return "S"
+    end
+    return fallback
+end
+vim.keymap.set("n", "i", function()
+    return smart_insert("i")
+end, { expr = true, noremap = true })
+vim.keymap.set("n", "a", function()
+    return smart_insert("a")
+end, { expr = true, noremap = true })
+
 -- File Saving
 vim.keymap.set("n", "<C-s>", ":w<CR>", { noremap = true })
 
@@ -13,20 +29,20 @@ vim.keymap.set("n", "<leader>de", ":close<CR>", { noremap = true, silent = true 
 
 -- Resize splits
 local function resize_split(direction, amount)
-	vim.cmd(direction == "height" and ("resize " .. amount) or ("vertical resize " .. amount))
+    vim.cmd(direction == "height" and ("resize " .. amount) or ("vertical resize " .. amount))
 end
 
 vim.keymap.set("n", "<C-Up>", function()
-	resize_split("height", "+5")
+    resize_split("height", "+5")
 end, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-Down>", function()
-	resize_split("height", "-5")
+    resize_split("height", "-5")
 end, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-Left>", function()
-	resize_split("width", "-5")
+    resize_split("width", "-5")
 end, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-Right>", function()
-	resize_split("width", "+5")
+    resize_split("width", "+5")
 end, { noremap = true, silent = true })
 
 -- Split navigation
