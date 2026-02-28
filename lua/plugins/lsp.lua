@@ -72,6 +72,20 @@ return {
                 table.insert(enabled_servers, "clangd")
             end
 
+            -- ols (oding lang)
+            if is_executable("ols") then
+                lsp.config("ols", {
+                    init_options = {
+                        checker_args = "-strict-style",
+                        collections = {
+                            { name = "shared", path = vim.fn.expand("$HOME/odin-lib") },
+                        },
+                    },
+                    capabilities = capabilities,
+                })
+                table.insert(enabled_servers, "ols")
+            end
+
             local function is_port_open(host, port)
                 local tcp = vim.uv.new_tcp()
                 if not tcp then

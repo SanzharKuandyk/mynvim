@@ -125,6 +125,14 @@ return {
             },
         },
         opts = {
+            formatters = {
+                odinfmt = {
+                    -- Change where to find the command if it isn't in your path.
+                    command = "odinfmt",
+                    args = { "-stdin" },
+                    stdin = true,
+                },
+            },
             formatters_by_ft = {
                 javascript = { "prettierd", "eslint_d" },
                 typescript = { "prettierd", "eslint_d" },
@@ -144,6 +152,7 @@ return {
                 toml = { "taplo" },
                 markdown = { "mdformat" },
                 blade = { "blade-formatter" },
+                odin = { "odinfmt" },
             },
         },
     },
