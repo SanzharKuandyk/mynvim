@@ -26,7 +26,8 @@ return {
         dependencies = { "williamboman/mason.nvim" },
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            ensure_installed = { "clangd", "vue_ls", "lua_ls" },
+            -- put zls and ols later
+            ensure_installed = { "clangd", "lua_ls" },
             automatic_installation = false,
             automatic_enable = false,
         },
@@ -70,6 +71,15 @@ return {
                     capabilities = capabilities,
                 })
                 table.insert(enabled_servers, "clangd")
+            end
+
+            if is_executable("zls") then
+                lsp.config("zls", {
+                    cmd = { "zls" },
+                    filetypes = { "zig" },
+                    root_dir = vim.fs.root(0, { "build.zig", ".git" }),
+                })
+                table.insert(enabled_servers, "zls")
             end
 
             -- ols (oding lang)
