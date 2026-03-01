@@ -120,6 +120,11 @@ return {
                     ["g\\"] = { "actions.toggle_trash", mode = "n" },
                 },
                 use_default_keymaps = false,
+                view_options = {
+                    is_hidden_file = function(name, _)
+                        return vim.endswith(name, ".gd.uid")
+                    end,
+                },
             })
             vim.keymap.set("n", "<C-b>", "<cmd>Oil<CR>", { desc = "Oil file browser", noremap = true, silent = true })
             vim.keymap.set(
