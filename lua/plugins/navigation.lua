@@ -122,7 +122,8 @@ return {
                 use_default_keymaps = false,
                 view_options = {
                     is_hidden_file = function(name, _)
-                        return vim.endswith(name, ".gd.uid")
+                        local m = name:match("^%.")
+                        return m ~= nil or vim.endswith(name, ".gd.uid")
                     end,
                 },
             })
