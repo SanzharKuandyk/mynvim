@@ -360,28 +360,6 @@ return {
 
             vim.api.nvim_create_user_command("StopGodotConnection", stop_godot_connection, {})
 
-            vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
-                callback = function()
-                    if not godot_connected then
-                        start_godot_connection()
-                    end
-                end,
-            })
-
-            vim.api.nvim_create_autocmd("BufReadPost", {
-                pattern = "*.gd",
-                callback = function()
-                    local clients = vim.lsp.get_clients({ name = "gdscript" })
-                    local stopped = vim.tbl_contains(clients, function(c)
-                        return c.is_stopped()
-                    end, { predicate = true })
-                    if #clients == 0 or stopped then
-                        print("GDScript LSP not running, starting connection...")
-                        start_godot_connection()
-                    end
-                end,
-            })
-
             vim.api.nvim_create_autocmd("VimLeave", {
                 callback = function()
                     if godot_connected then
