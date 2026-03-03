@@ -1,4 +1,4 @@
-return {
+local specs = {
     -- Lua LSP for Neovim config
     {
         "folke/lazydev.nvim",
@@ -51,21 +51,6 @@ return {
                 return vim.fn.executable(cmd) == 1
             end
 
-            -- Helper to check if port is open
-            local function port_open(host, port)
-                local tcp = vim.uv.new_tcp()
-                if not tcp then
-                    return false
-                end
-                local ok = false
-                tcp:connect(host, port, function(err)
-                    ok = not err
-                end)
-                vim.uv.run("nowait")
-                tcp:close()
-                return ok
-            end
-
             -- Register a server if condition is met
             local enabled = {}
             local function server(cond, name, config)
@@ -108,14 +93,6 @@ return {
                     checker_args = "-strict-style",
                     collections = { { name = "shared", path = vim.fn.expand("$HOME/odin-lib") } },
                 },
-                capabilities = caps,
-            })
-
-            -- Godot's gdscript
-            server(port_open("127.0.0.1", 6005), "gdscript", {
-                cmd = lsp.rpc.connect("127.0.0.1", 6005),
-                root_dir = vim.fs.root(0, { "project.godot", ".git" }),
-                filetypes = { "gd", "gdscript", "gdscript3" },
                 capabilities = caps,
             })
 
@@ -171,19 +148,23 @@ return {
                         vim.schedule(vim.lsp.buf.signature_help)
                     end)
                     map("<leader>of", vim.diagnostic.open_float)
-                    map("[d", vim.diagnostic.goto_prev)
-                    map("]d", vim.diagnostic.goto_next)
+                    map("[d", function()
+                        vim.diagnostic.jump({ count = -1 })
+                    end)
+                    map("]d", function()
+                        vim.diagnostic.jump({ count = 1 })
+                    end)
                     map("[e", function()
-                        vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+                        vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
                     end)
                     map("]e", function()
-                        vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+                        vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
                     end)
                     map("[w", function()
-                        vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+                        vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
                     end)
                     map("]w", function()
-                        vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+                        vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
                     end)
                 end,
             })
@@ -296,81 +277,6 @@ return {
         end,
     },
 
-    -- Godot integration
-    {
-        "habamax/vim-godot",
-        ft = { "gdscript", "gdshader" },
-        config = function()
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "gdscript",
-                callback = function()
-                    vim.opt_local.expandtab = false
-                    vim.opt_local.tabstop = 4
-                    vim.opt_local.shiftwidth = 4
-                    vim.opt_local.softtabstop = 4
-                    vim.opt_local.indentexpr = ""
-                end,
-            })
-
-            local function get_godot_address()
-                local env = require("utils.env").Load_env() or {}
-                return env["GODOT_ADDRESS"] or "127.0.0.1:55432"
-            end
-
-            local function is_address_in_use(address)
-                local _, port = address:match("(.+):(%d+)")
-                local cmd = vim.fn.has("win32") == 1 and ("netstat -ano | findstr :" .. port)
-                    or ("ss -tuln | grep " .. address)
-                return vim.fn.system(cmd) ~= ""
-            end
-
-            local godot_connected = false
-
-            local function start_godot_connection(address)
-                if godot_connected then
-                    return
-                end
-                local f = io.open(vim.fn.getcwd() .. "/project.godot", "r")
-                if not f then
-                    return
-                end
-                io.close(f)
-                local addr = address or get_godot_address()
-                if is_address_in_use(addr) then
-                    print("Address " .. addr .. " already in use")
-                    return
-                end
-                vim.fn.serverstart(addr)
-                godot_connected = true
-                print("Godot connection started at " .. addr)
-            end
-
-            local function stop_godot_connection()
-                local addr = get_godot_address()
-                vim.fn.serverstop(addr)
-                for _, client in pairs(vim.lsp.get_clients({ name = "gdscript" })) do
-                    vim.lsp.stop_client(client.id)
-                end
-                godot_connected = false
-                print("Godot connection stopped at " .. addr)
-            end
-
-            vim.api.nvim_create_user_command("StartGodotConnection", function(opts)
-                start_godot_connection(opts.args ~= "" and opts.args or nil)
-            end, { nargs = "?" })
-
-            vim.api.nvim_create_user_command("StopGodotConnection", stop_godot_connection, {})
-
-            vim.api.nvim_create_autocmd("VimLeave", {
-                callback = function()
-                    if godot_connected then
-                        stop_godot_connection()
-                    end
-                end,
-            })
-        end,
-    },
-
     -- Diagnostics viewer
     {
         "folke/trouble.nvim",
@@ -424,3 +330,7 @@ return {
         end,
     },
 }
+
+vim.list_extend(specs, require("plugins.lsp.godot"))
+
+return specs
