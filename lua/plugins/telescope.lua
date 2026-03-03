@@ -31,24 +31,30 @@ return {
                         return
                     end
 
-                    local results = vim.fn.systemlist("git status --porcelain=v1")
+                    local results = vim.fn.systemlist("git status --porcelain=v1 -uall")
 
                     pickers
                         .new({}, {
                             prompt_title = "Git Status",
+                            cwd = git_root,
                             finder = finders.new_table({
                                 results = results,
                                 entry_maker = function(line)
                                     local status = line:sub(1, 2)
                                     local path = line:sub(4)
 
+                                    if status == "?? " and path:match("/$") then
+                                        return nil
+                                    end
+
                                     local rel = Path:new(path):make_relative(git_root)
+                                    local full_path = Path:new(git_root) / path
 
                                     return {
-                                        value = path,
+                                        value = full_path.filename,
                                         ordinal = path,
                                         display = status .. " " .. rel,
-                                        path = path,
+                                        path = full_path.filename,
                                         status = status,
                                     }
                                 end,
@@ -58,7 +64,7 @@ return {
                         })
                         :find()
                 end,
-                desc = "Git status (relative paths)",
+                desc = "Git status (files only)",
             },
             { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Current buffer fuzzy find" },
             {
