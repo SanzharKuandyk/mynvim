@@ -239,6 +239,7 @@ return {
     {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        event = "VeryLazy",
         opts = {
             on_attach = function(client)
                 client.server_capabilities.semanticTokensProvider = nil
