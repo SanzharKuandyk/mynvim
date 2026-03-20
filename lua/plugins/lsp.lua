@@ -53,6 +53,9 @@ local specs = {
 
             -- Register a server if condition is met
             local enabled = {}
+            ---@param cond boolean
+            ---@param name string
+            ---@param config vim.lsp.Config
             local function server(cond, name, config)
                 if not cond then
                     return
@@ -62,7 +65,8 @@ local specs = {
             end
 
             -- Lua
-            server(exe("lua-language-server"), "lua_ls", {
+            ---@type vim.lsp.Config
+            local lua_ls = {
                 settings = {
                     Lua = {
                         diagnostics = { globals = { "vim", "uv" } },
@@ -70,33 +74,41 @@ local specs = {
                     },
                 },
                 capabilities = caps,
-            })
+            }
+            server(exe("lua-language-server"), "lua_ls", lua_ls)
 
-            server(exe("clangd"), "clangd", {
+            ---@type vim.lsp.Config
+            local clangd = {
                 cmd = { "clangd", "--background-index" },
                 filetypes = { "c", "cpp", "objc", "objcpp" },
                 root_dir = vim.fs.root(0, { "compile_commands.json", "compile_flags.txt", ".git" }),
                 capabilities = caps,
-            })
+            }
+            server(exe("clangd"), "clangd", clangd)
 
             -- Zig
-            server(exe("zls"), "zls", {
+            ---@type vim.lsp.Config
+            local zls = {
                 cmd = { "zls" },
                 filetypes = { "zig" },
                 root_dir = vim.fs.root(0, { "build.zig", ".git" }),
                 capabilities = caps,
-            })
+            }
+            server(exe("zls"), "zls", zls)
 
             -- Odin
-            server(exe("ols"), "ols", {
+            ---@type vim.lsp.Config
+            local ols = {
                 init_options = {
                     checker_args = "-strict-style",
                     collections = { { name = "shared", path = vim.fn.expand("$HOME/odin-lib") } },
                 },
                 capabilities = caps,
-            })
+            }
+            server(exe("ols"), "ols", ols)
 
-            server(exe("dart"), "dartls", {
+            ---@type vim.lsp.Config
+            local dartls = {
                 settings = {
                     dart = {
                         analysisExcludedFolders = {
@@ -108,12 +120,15 @@ local specs = {
                     },
                 },
                 capabilities = caps,
-            })
+            }
+            server(exe("dart"), "dartls", dartls)
 
-            server(exe("vue-language-server") and vim.fs.root(0, { "tsconfig.json" }) ~= nil, "vue_ls", {
+            ---@type vim.lsp.Config
+            local vue_ls = {
                 init_options = { vue = { hybridMode = false } },
                 capabilities = caps,
-            })
+            }
+            server(exe("vue-language-server") and vim.fs.root(0, { "tsconfig.json" }) ~= nil, "vue_ls", vue_ls)
 
             if #enabled > 0 then
                 lsp.enable(enabled)
@@ -130,7 +145,7 @@ local specs = {
                     end
 
                     -- Inlay hints
-                    if client and client.supports_method("textDocument/inlayHint") then
+                    if client and client:supports_method("textDocument/inlayHint", bufnr) then
                         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                     end
 
