@@ -24,37 +24,61 @@ return {
                     local finders = require("telescope.finders")
                     local conf = require("telescope.config").values
                     local Path = require("plenary.path")
+                    local function parse_git_status_path(status, raw_path)
+                        if status:find("[RC]") then
+                            return raw_path:match(" -> (.+)$") or raw_path
+                        end
+                        return raw_path
+                    end
 
-                    local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+                    local cwd = vim.fn.getcwd()
+                    local git_root = vim.fn.systemlist({ "git", "-C", cwd, "rev-parse", "--show-toplevel" })[1]
                     if not git_root or git_root == "" then
                         vim.notify("Not a git repository", vim.log.levels.WARN)
                         return
                     end
 
-                    local results = vim.fn.systemlist("git status --porcelain=v1 -uall")
+                    local results = vim.fn.systemlist({
+                        "git",
+                        "-C",
+                        cwd,
+                        "-c",
+                        "core.quotepath=false",
+                        "-c",
+                        "status.relativePaths=false",
+                        "status",
+                        "--porcelain=v1",
+                        "-uall",
+                        "--",
+                        ".",
+                    })
+                    if vim.v.shell_error ~= 0 then
+                        vim.notify("git status failed for current working directory", vim.log.levels.WARN)
+                        return
+                    end
 
                     pickers
                         .new({}, {
                             prompt_title = "Git Status",
-                            cwd = git_root,
+                            cwd = cwd,
                             finder = finders.new_table({
                                 results = results,
                                 entry_maker = function(line)
                                     local status = line:sub(1, 2)
-                                    local path = line:sub(4)
+                                    local path = parse_git_status_path(status, line:sub(4))
 
                                     if status == "?? " and path:match("/$") then
                                         return nil
                                     end
 
-                                    local rel = Path:new(path):make_relative(git_root)
-                                    local full_path = Path:new(git_root) / path
+                                    local full_path = vim.fs.joinpath(git_root, path)
+                                    local rel = vim.fs.relpath(cwd, full_path) or Path:new(full_path):make_relative(cwd)
 
                                     return {
-                                        value = full_path.filename,
+                                        value = full_path,
                                         ordinal = path,
                                         display = status .. " " .. rel,
-                                        path = full_path.filename,
+                                        path = full_path,
                                         status = status,
                                     }
                                 end,
