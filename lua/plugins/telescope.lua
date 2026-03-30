@@ -94,7 +94,6 @@ return {
             {
                 "<leader>fp",
                 function()
-                    require("telescope").load_extension("project")
                     require("telescope").extensions.project.project()
                 end,
                 desc = "Projects",
@@ -162,13 +161,14 @@ return {
                     path_display = {
                         "filename_first",
                         {
-                            truncate = 6, -- increase if your folders are deep
+                            truncate = 6, -- increase if folders are deep
                         },
                     },
                 },
                 extensions = {
                     fzf = {},
                     project = {},
+                    advanced_git_search = {},
                 },
             })
 
@@ -193,6 +193,8 @@ return {
             })
 
             telescope.load_extension("fzf")
+            telescope.load_extension("project")
+            telescope.load_extension("advanced_git_search")
         end,
     },
 
