@@ -36,5 +36,4 @@ vim.g.maplocalleader = ","
 -- Theme settings (colorscheme set after plugins load)
 vim.g.nagisa_transparent = false
 
--- GUI settings
-vim.g.airline_powerline_fonts = 1
+vim.opt.showtabline = 0

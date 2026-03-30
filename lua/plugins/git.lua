@@ -19,7 +19,7 @@ return {
                         return "]c"
                     end
                     vim.schedule(function()
-                        gs.next_hunk()
+                        gs.nav_hunk("next", { target = "all" })
                     end)
                     return "<Ignore>"
                 end, { expr = true })
@@ -29,7 +29,7 @@ return {
                         return "[c"
                     end
                     vim.schedule(function()
-                        gs.prev_hunk()
+                        gs.nav_hunk("prev", { target = "all" })
                     end)
                     return "<Ignore>"
                 end, { expr = true })
@@ -49,10 +49,6 @@ return {
                 map("n", "<leader>hp", gs.preview_hunk)
                 map("n", "<leader>hb", function()
                     gs.blame_line({ full = true })
-                end)
-                map("n", "<leader>hd", gs.diffthis)
-                map("n", "<leader>hD", function()
-                    gs.diffthis("~")
                 end)
 
                 map("n", "<leader>hQ", function()
