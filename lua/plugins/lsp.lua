@@ -195,7 +195,8 @@ local specs = {
     -- Rust
     {
         "mrcjkb/rustaceanvim",
-        version = "^7",
+        version = "^9",
+        lazy = false,
         config = function()
             vim.g.rustaceanvim = {
                 tools = {},
@@ -215,19 +216,7 @@ local specs = {
                         },
                     },
                 },
-                dap = {},
             }
-
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "RustaceanvimLoaded",
-                callback = function()
-                    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                        if vim.bo[buf].filetype == "rust" and vim.bo[buf].buflisted then
-                            vim.cmd("LspStart rust_analyzer")
-                        end
-                    end
-                end,
-            })
         end,
     },
 
