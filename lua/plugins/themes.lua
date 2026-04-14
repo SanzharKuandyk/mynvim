@@ -1,5 +1,4 @@
 return {
-    -- Nagisa theme (provides EndOfTheWorld colorscheme)
     {
         "sanzharkuandyk/nagisa.nvim",
         lazy = false,
