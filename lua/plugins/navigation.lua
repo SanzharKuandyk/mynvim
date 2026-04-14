@@ -99,6 +99,29 @@ return {
         lazy = false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
+            local gitignore_cache = {} ---@type table<string, table<string, boolean>>
+
+            local function is_gitignored(name, dir)
+                if not gitignore_cache[dir] then
+                    local out = vim.fn.systemlist({
+                        "git",
+                        "-C",
+                        dir,
+                        "ls-files",
+                        "--others",
+                        "--ignored",
+                        "--exclude-standard",
+                        "--directory",
+                    })
+                    local set = {}
+                    for _, f in ipairs(out) do
+                        set[f:gsub("/$", "")] = true
+                    end
+                    gitignore_cache[dir] = set
+                end
+                return gitignore_cache[dir][name] == true
+            end
+
             require("oil").setup({
                 keymaps = {
                     ["g?"] = { "actions.show_help", mode = "n" },
@@ -121,9 +144,15 @@ return {
                 },
                 use_default_keymaps = false,
                 view_options = {
-                    is_hidden_file = function(name, _)
-                        local m = name:match("^%.")
-                        return m ~= nil or vim.endswith(name, ".gd.uid")
+                    is_hidden_file = function(name, bufnr)
+                        if name:match("^%.") or vim.endswith(name, ".gd.uid") then
+                            return true
+                        end
+                        local dir = require("oil").get_current_dir(bufnr)
+                        if not dir then
+                            return false
+                        end
+                        return is_gitignored(name, dir)
                     end,
                 },
             })
