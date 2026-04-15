@@ -25,7 +25,7 @@ return {
                 default = { "lazydev", "lsp", "path", "buffer" },
             },
             fuzzy = { implementation = "prefer_rust_with_warning" },
-            signature = { enabled = true },
+            signature = { enabled = false },
             completion = {
                 keyword = { range = "prefix" },
                 trigger = {
