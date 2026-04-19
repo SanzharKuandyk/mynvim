@@ -1,5 +1,15 @@
 return {
     {
+        "SanzharKuandyk/shunpo.nvim",
+        config = function()
+            require("shunpo").setup({
+                list = {
+                    include_self = true,
+                },
+            })
+        end,
+    },
+    {
         "atiladefreitas/dooing",
         config = function()
             require("dooing").setup({

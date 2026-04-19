@@ -35,7 +35,9 @@ return {
                     "harpoon2",
                     {
                         function()
-                            return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+                            return require("shunpo").lualine({
+                                fallback = vim.fn.fnamemodify(vim.fn.getcwd(), ":t"),
+                            })
                         end,
                         icon = "",
                         separator = "",
