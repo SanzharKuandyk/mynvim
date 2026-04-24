@@ -171,7 +171,6 @@ return {
                 end,
             })
 
-            vim.keymap.set("n", "<C-b>", "<cmd>Oil<CR>", { desc = "Oil file browser", noremap = true, silent = true })
             vim.keymap.set(
                 { "n", "v" },
                 "<leader>-",
