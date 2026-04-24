@@ -156,6 +156,21 @@ return {
                     end,
                 },
             })
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "OilActionsPost",
+                callback = function(ev)
+                    for _, action in ipairs(ev.data.actions) do
+                        if action.type == "delete" then
+                            local path = action.url:gsub("^oil://", "")
+                            local bufnr = vim.fn.bufnr(path)
+                            if bufnr ~= -1 then
+                                vim.api.nvim_buf_delete(bufnr, { force = true })
+                            end
+                        end
+                    end
+                end,
+            })
+
             vim.keymap.set("n", "<C-b>", "<cmd>Oil<CR>", { desc = "Oil file browser", noremap = true, silent = true })
             vim.keymap.set(
                 { "n", "v" },

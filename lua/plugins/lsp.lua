@@ -137,7 +137,10 @@ local specs = {
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(ev)
                     if vim.g.lsp_disabled then
-                        vim.lsp.stop_client(ev.data.client_id)
+                        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+                        if client then
+                            client:stop()
+                        end
                         return
                     end
                     local client = lsp.get_client_by_id(ev.data.client_id)

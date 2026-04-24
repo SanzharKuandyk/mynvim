@@ -76,7 +76,7 @@ vim.keymap.set("n", "<leader>tl", function()
     vim.g.lsp_disabled = not vim.g.lsp_disabled
     if vim.g.lsp_disabled then
         for _, client in ipairs(vim.lsp.get_clients()) do
-            vim.lsp.stop_client(client.id)
+            client:stop()
         end
         vim.notify("LSP disabled", vim.log.levels.WARN)
     else

@@ -164,7 +164,7 @@ end
 
 local function stop_all_gdscript_clients()
     for _, client in ipairs(vim.lsp.get_clients({ name = "gdscript" })) do
-        vim.lsp.stop_client(client.id)
+        client:stop()
     end
 end
 
