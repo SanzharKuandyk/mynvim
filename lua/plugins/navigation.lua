@@ -6,18 +6,18 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         keys = {
             {
+                "<leader>hm",
+                function()
+                    require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
+                end,
+                desc = "Harpoon menu",
+            },
+            {
                 "<leader>ja",
                 function()
                     require("harpoon"):list():add()
                 end,
                 desc = "Harpoon add",
-            },
-            {
-                "<leader>jm",
-                function()
-                    require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
-                end,
-                desc = "Harpoon menu",
             },
             {
                 "<leader>j1",
@@ -62,7 +62,7 @@ return {
                 desc = "Harpoon next",
             },
             {
-                "<leader>hv",
+                "<leader>hf",
                 function()
                     local harpoon = require("harpoon")
                     local conf = require("telescope.config").values

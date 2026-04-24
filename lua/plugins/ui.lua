@@ -90,7 +90,7 @@ return {
     {
         "folke/zen-mode.nvim",
         keys = {
-            { "<S-z>", "<cmd>ZenMode<CR>", desc = "Toggle Zen Mode", silent = true },
+            { "<leader>z", "<cmd>ZenMode<CR>", desc = "Toggle Zen Mode", silent = true },
         },
         opts = {},
     },

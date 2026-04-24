@@ -71,6 +71,19 @@ vim.keymap.set("n", "<leader>qp", ":cprev<CR>", { noremap = true, silent = true 
 vim.keymap.set("n", "<leader>ln", ":lnext<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>lp", ":lprev<CR>", { noremap = true, silent = true })
 
+-- LSP toggle (session-scoped)
+vim.keymap.set("n", "<leader>tl", function()
+    vim.g.lsp_disabled = not vim.g.lsp_disabled
+    if vim.g.lsp_disabled then
+        for _, client in ipairs(vim.lsp.get_clients()) do
+            vim.lsp.stop_client(client.id)
+        end
+        vim.notify("LSP disabled", vim.log.levels.WARN)
+    else
+        vim.notify("LSP enabled — reopen buffers to attach", vim.log.levels.INFO)
+    end
+end, { noremap = true, silent = true, desc = "Toggle LSP" })
+
 -- Switch to next buffer/tab
 vim.keymap.set("n", "<leader>n", ":bnext<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>p", ":bprev<CR>", { noremap = true })

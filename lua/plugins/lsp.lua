@@ -136,6 +136,10 @@ local specs = {
 
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(ev)
+                    if vim.g.lsp_disabled then
+                        vim.lsp.stop_client(ev.data.client_id)
+                        return
+                    end
                     local client = lsp.get_client_by_id(ev.data.client_id)
                     local bufnr = ev.buf
 
@@ -201,7 +205,11 @@ local specs = {
             vim.g.rustaceanvim = {
                 tools = {},
                 server = {
-                    on_attach = function(_, bufnr)
+                    on_attach = function(client, bufnr)
+                        if vim.g.lsp_disabled then
+                            vim.lsp.stop_client(client.id)
+                            return
+                        end
                         vim.keymap.set("n", "<leader>ca", function()
                             vim.cmd.RustLsp("codeAction")
                         end, { silent = true, buffer = bufnr, desc = "Rust code action" })
@@ -215,67 +223,6 @@ local specs = {
                             completion = { autoimport = { enable = true } },
                         },
                     },
-                },
-            }
-        end,
-    },
-
-    -- TypeScript
-    {
-        "pmizio/typescript-tools.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        event = "VeryLazy",
-        opts = {
-            on_attach = function(client)
-                client.server_capabilities.semanticTokensProvider = nil
-            end,
-            filetypes = {
-                "javascriptreact",
-                "javascript.jsx",
-                "typescript",
-                "typescriptreact",
-                "typescript.tsx",
-            },
-            settings = {
-                separate_diagnostic_server = true,
-                tsserver_plugins = {
-                    "@styled/typescript-styled-plugin",
-                    "@vue/language-server",
-                    "@vue/typescript-plugin",
-                },
-                tsserver_max_memory = 2024,
-                tsserver_file_preferences = {
-                    includeInlayParameterNameHints = "all",
-                },
-                tsserver_locale = "en",
-                complete_function_calls = false,
-                include_completions_with_insert_text = false,
-                code_lens = "off",
-                disable_member_code_lens = true,
-            },
-        },
-    },
-
-    -- DAP
-    {
-        "mfussenegger/nvim-dap",
-        dependencies = { "rcarriga/nvim-dap-ui" },
-        keys = {
-            { "<F5>", "<cmd>DapContinue<CR>", desc = "DAP Continue" },
-            { "<F10>", "<cmd>DapStepOver<CR>", desc = "DAP Step Over" },
-            { "<F11>", "<cmd>DapStepInto<CR>", desc = "DAP Step Into" },
-            { "<F12>", "<cmd>DapStepOut<CR>", desc = "DAP Step Out" },
-        },
-        config = function()
-            local dap = require("dap")
-            dap.adapters.godot = { type = "server", host = "127.0.0.1", port = 6006 }
-            dap.configurations.gdscript = {
-                {
-                    type = "godot",
-                    request = "launch",
-                    name = "Launch scene",
-                    project = "${workspaceFolder}",
-                    launch_scene = true,
                 },
             }
         end,
