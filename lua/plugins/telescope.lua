@@ -167,7 +167,13 @@ return {
                 },
                 extensions = {
                     fzf = {},
-                    project = {},
+                    project = {
+                        on_project_selected = function(prompt_bufnr)
+                            local project_actions = require("telescope._extensions.project.actions")
+                            project_actions.change_working_directory(prompt_bufnr, false)
+                            require("oil").open(vim.fn.getcwd())
+                        end,
+                    },
                     advanced_git_search = {},
                 },
             })
