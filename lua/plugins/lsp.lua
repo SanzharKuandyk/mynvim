@@ -205,11 +205,10 @@ local specs = {
             vim.g.rustaceanvim = {
                 tools = {},
                 server = {
-                    on_attach = function(client, bufnr)
-                        if vim.g.lsp_disabled then
-                            vim.lsp.stop_client(client.id)
-                            return
-                        end
+                    auto_attach = function()
+                        return not vim.g.lsp_disabled
+                    end,
+                    on_attach = function(_, bufnr)
                         vim.keymap.set("n", "<leader>ca", function()
                             vim.cmd.RustLsp("codeAction")
                         end, { silent = true, buffer = bufnr, desc = "Rust code action" })
