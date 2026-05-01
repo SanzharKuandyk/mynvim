@@ -86,13 +86,19 @@ return {
         end,
     },
 
-    -- Zen mode
+    -- Centered layout
     {
-        "folke/zen-mode.nvim",
+        "shortcuts/no-neck-pain.nvim",
+        lazy = false,
         keys = {
-            { "<leader>z", "<cmd>ZenMode<CR>", desc = "Toggle Zen Mode", silent = true },
+            { "<leader>z", "<cmd>NoNeckPain<CR>", desc = "Toggle centering", silent = true },
         },
-        opts = {},
+        opts = {
+            width = 120,
+            autocmds = {
+                enableOnVimEnter = "safe",
+            },
+        },
     },
 
     -- Buffer manager
