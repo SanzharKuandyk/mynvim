@@ -8,12 +8,17 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("BufReadPost", {
     pattern = "*.rs",
     callback = function()
-        local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-        for i, line in ipairs(lines) do
-            if line:match("#%[cfg%(test%)%]") or line:match("^mod tests") then
-                pcall(vim.cmd, i .. "foldclose")
+        vim.defer_fn(function()
+            local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+            local saved = vim.api.nvim_win_get_cursor(0)
+            for i, line in ipairs(lines) do
+                if line:match("#%[cfg%(test%)%]") or line:match("^%s*mod tests") then
+                    vim.api.nvim_win_set_cursor(0, { i, 0 })
+                    pcall(vim.cmd, "foldclose")
+                end
             end
-        end
+            vim.api.nvim_win_set_cursor(0, saved)
+        end, 100)
     end,
 })
 
