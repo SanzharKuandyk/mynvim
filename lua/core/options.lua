@@ -39,3 +39,9 @@ vim.g.maplocalleader = ","
 vim.g.nagisa_transparent = false
 
 vim.opt.showtabline = 0
+
+-- Folding (treesitter-based, no LSP)
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevelstart = 99 -- everything open by default
+vim.opt.foldtext = "" -- show first line of fold as-is

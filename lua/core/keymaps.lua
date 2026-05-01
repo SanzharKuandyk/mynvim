@@ -87,3 +87,9 @@ end, { noremap = true, silent = true, desc = "Toggle LSP" })
 -- Switch to next buffer/tab
 vim.keymap.set("n", "<leader>n", ":bnext<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>p", ":bprev<CR>", { noremap = true })
+
+-- Folds
+vim.keymap.set("n", "]f", "zo", { noremap = true, silent = true, desc = "Open fold" })
+vim.keymap.set("n", "[f", "zc", { noremap = true, silent = true, desc = "Close fold" })
+vim.keymap.set("n", "]F", "zR", { noremap = true, silent = true, desc = "Open all folds" })
+vim.keymap.set("n", "[F", "zM", { noremap = true, silent = true, desc = "Close all folds" })
