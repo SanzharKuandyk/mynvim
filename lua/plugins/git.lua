@@ -87,4 +87,12 @@ return {
             { "<leader>gs", "<cmd>Git<CR>", desc = "Git status" },
         },
     },
+
+    -- Inline unified diffs
+    {
+        "axkirillov/unified.nvim",
+        opts = {
+            -- your configuration comes here
+        },
+    },
 }
