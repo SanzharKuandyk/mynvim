@@ -120,6 +120,11 @@ return {
 
             telescope.setup({
                 defaults = {
+                    layout_config = {
+                        horizontal = {
+                            preview_cutoff = 0,
+                        },
+                    },
                     vimgrep_arguments = {
                         "rg",
                         "--color=never",
