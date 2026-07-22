@@ -99,6 +99,27 @@ return {
                 enableOnVimEnter = "safe",
             },
         },
+        config = function(_, opts)
+            local no_neck_pain = require("no-neck-pain")
+            no_neck_pain.setup(opts)
+
+            -- No-neck-pain handles VimResized itself.  WezTerm pane changes can
+            -- briefly report the old grid size, though, so refresh once more
+            -- after the terminal has settled.  Calling resize without a width
+            -- reflows the side buffers without changing the configured width.
+            local group = vim.api.nvim_create_augroup("NoNeckPainWezTermResize", { clear = true })
+            vim.api.nvim_create_autocmd("VimResized", {
+                group = group,
+                callback = function()
+                    vim.defer_fn(function()
+                        if _G.NoNeckPain.state and _G.NoNeckPain.state.enabled then
+                            no_neck_pain.resize()
+                        end
+                    end, 100)
+                end,
+                desc = "Reflow NoNeckPain after a WezTerm pane resize",
+            })
+        end,
     },
 
     -- Buffer manager
