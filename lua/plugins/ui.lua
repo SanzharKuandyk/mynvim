@@ -101,66 +101,41 @@ return {
         },
     },
 
-    -- Buffer manager
+    -- Local, dependency-free buffer picker
     {
-        "j-morano/buffer_manager.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        dir = vim.fn.stdpath("data") .. "/lazy/bufdeck.nvim",
+        name = "bufdeck.nvim",
         config = function()
-            require("buffer_manager").setup({
-                format_function = function(buf_name)
-                    local cwd = vim.fn.getcwd()
-                    local norm_buf = buf_name:gsub("\\", "/")
-                    local norm_cwd = cwd:gsub("\\", "/")
-                    if norm_cwd:sub(-1) ~= "/" then
-                        norm_cwd = norm_cwd .. "/"
-                    end
-                    if norm_buf:lower():sub(1, #norm_cwd) == norm_cwd:lower() then
-                        return norm_buf:sub(#norm_cwd + 1)
-                    end
-                    return norm_buf
-                end,
+            require("bufdeck").setup({
+                keymap = "bl",
+                min_width = 0.55,
+                max_width = 0.55,
+                min_height = 0.4,
+                max_height = 0.4,
+                save_on_close = true,
+                sort = "lastused", -- "lastused", "name", or "bufnr"
+                border = "rounded",
+                mappings = {
+                    open = { "<CR>", "<C-m>" },
+                    close = "q",
+                    discard = "<Esc>",
+                    save = "<C-s>",
+                },
             })
         end,
+    },
+
+    -- Better buffer deletion
+    {
+        "moll/vim-bbye",
+        cmd = { "Bdelete", "Bwipeout" },
         keys = {
-            {
-                "bl",
-                function()
-                    require("buffer_manager.ui").toggle_quick_menu()
-                end,
-                desc = "Buffer list",
-                silent = true,
-            },
-            {
-                "<leader>bd",
-                function()
-                    local bufnr = vim.fn.bufnr("%")
-                    if bufnr ~= -1 then
-                        vim.cmd(":Bdelete")
-                    else
-                        print("Invalid buffer number")
-                    end
-                end,
-                desc = "Delete buffer",
-                silent = true,
-            },
-            {
-                "<leader>bw",
-                function()
-                    local bufnr = vim.fn.bufnr("%")
-                    if bufnr ~= -1 then
-                        vim.cmd(":Bwipeout")
-                    else
-                        print("Invalid buffer number")
-                    end
-                end,
-                desc = "Wipeout buffer",
-                silent = true,
-            },
+            { "<leader>bd", "<cmd>Bdelete<CR>", desc = "Delete buffer", silent = true },
+            { "<leader>bw", "<cmd>Bwipeout<CR>", desc = "Wipeout buffer", silent = true },
             {
                 "bwa",
                 function()
-                    local buffers = vim.api.nvim_list_bufs()
-                    for _, bufnr in ipairs(buffers) do
+                    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
                         if
                             vim.api.nvim_buf_is_valid(bufnr)
                             and vim.api.nvim_get_option_value("buflisted", { buf = bufnr })
@@ -173,12 +148,6 @@ return {
                 silent = true,
             },
         },
-    },
-
-    -- Better buffer deletion
-    {
-        "moll/vim-bbye",
-        cmd = { "Bdelete", "Bwipeout" },
     },
 
     -- Show key presses
