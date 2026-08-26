@@ -103,8 +103,7 @@ return {
 
     -- Local, dependency-free buffer picker
     {
-        dir = vim.fn.stdpath("data") .. "/lazy/bufdeck.nvim",
-        name = "bufdeck.nvim",
+        "SanzharKuandyk/bufdeck.nvim",
         config = function()
             require("bufdeck").setup({
                 keymap = "bl",
