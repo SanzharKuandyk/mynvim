@@ -99,6 +99,11 @@ return {
         lazy = false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
+            if vim.fn.has("win32") == 1 and vim.fn.executable("wmic") == 0 then
+                local compat_bin = vim.fs.joinpath(vim.fn.stdpath("config"), "bin")
+                vim.env.PATH = compat_bin .. ";" .. (vim.env.PATH or "")
+            end
+
             local gitignore_cache = {} ---@type table<string, table<string, boolean>>
 
             local function is_gitignored(name, dir)
@@ -147,6 +152,10 @@ return {
                     is_hidden_file = function(name, bufnr)
                         if name:match("^%.") or vim.endswith(name, ".gd.uid") then
                             return true
+                        end
+                        -- The Windows drive-list buffer has no filesystem directory.
+                        if vim.api.nvim_buf_get_name(bufnr) == "oil:///" then
+                            return false
                         end
                         local dir = require("oil").get_current_dir(bufnr)
                         if not dir then
