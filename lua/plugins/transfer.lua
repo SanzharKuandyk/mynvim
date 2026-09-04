@@ -1,7 +1,7 @@
 return {
     -- Transfer.nvim for remote file sync via SFTP/rsync
     {
-        "coffebar/transfer.nvim",
+        "SanzharKuandyk/transfer.nvim",
         cmd = {
             "TransferInit",
             "DiffRemote",
@@ -19,9 +19,7 @@ return {
                         vim.notify("No file in current buffer", vim.log.levels.ERROR, { title = "Transfer" })
                         return
                     end
-                    local relative_path = vim.fn.fnamemodify(file_path, ":.")
-                    relative_path = relative_path:gsub("\\", "/")
-                    vim.cmd("TransferUpload " .. vim.fn.fnameescape(relative_path))
+                    vim.cmd("TransferUpload " .. file_path)
                 end,
                 desc = "Upload current file",
             },

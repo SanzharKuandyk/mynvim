@@ -52,7 +52,7 @@
   "telescope.nvim": { "branch": "master", "commit": "40aedd8a68c78a656a10a8d62d80c54af59420fb" },
   "themery.nvim": { "branch": "main", "commit": "bfa58f4b279d21cb515b28023e1b68ec908584b2" },
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "6264451f14119d63a52580e5198d6baf8518b0b2" },
-  "transfer.nvim": { "branch": "main", "commit": "af75ad55d621caee1f58fd02ce4e413ad925d948" },
+  "transfer.nvim": { "branch": "main", "commit": "a80fc945f9aae1002bb72831bb97ee076bc73a30" },
   "trouble.nvim": { "branch": "main", "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a" },
   "unified.nvim": { "branch": "main", "commit": "263bb56575bdbedcb7f5232ca809159012de1614" },
   "vim-bbye": { "branch": "master", "commit": "25ef93ac5a87526111f43e5110675032dbcacf56" },
