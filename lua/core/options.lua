@@ -27,6 +27,7 @@ vim.opt.expandtab = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
 vim.opt.updatetime = 650
+vim.opt.shellslash = true
 
 -- Clipboard
 vim.opt.clipboard:append("unnamedplus")
