@@ -1,7 +1,7 @@
 return {
     -- Transfer.nvim for remote file sync via SFTP/rsync
     {
-        "SanzharKuandyk/transfer.nvim",
+        "coffebar/transfer.nvim",
         cmd = {
             "TransferInit",
             "DiffRemote",
