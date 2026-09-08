@@ -176,7 +176,7 @@ return {
                         on_project_selected = function(prompt_bufnr)
                             local project_actions = require("telescope._extensions.project.actions")
                             project_actions.change_working_directory(prompt_bufnr, false)
-                            require("oil").open(vim.fn.getcwd())
+                            require("oil").open(vim.fn.getcwd()) -- Open Oil when we switched projects
                         end,
                     },
                     advanced_git_search = {},
