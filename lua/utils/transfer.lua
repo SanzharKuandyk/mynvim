@@ -57,6 +57,7 @@ function M.upload_trouble(view)
         if vim.notify == batch_notify then
             vim.notify = original_notify
         end
+        notify(("File uploading finished"))
     end
 
     local index = 0
