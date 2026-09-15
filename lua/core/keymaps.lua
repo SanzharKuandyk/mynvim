@@ -74,13 +74,14 @@ vim.keymap.set("n", "<leader>lp", ":lprev<CR>", { noremap = true, silent = true 
 -- LSP toggle (session-scoped)
 vim.keymap.set("n", "<leader>tl", function()
     vim.g.lsp_disabled = not vim.g.lsp_disabled
+    local servers = vim.g.lsp_servers or {}
+    if #servers > 0 then
+        vim.lsp.enable(servers, not vim.g.lsp_disabled)
+    end
     if vim.g.lsp_disabled then
-        for _, client in ipairs(vim.lsp.get_clients()) do
-            client:stop()
-        end
         vim.notify("LSP disabled", vim.log.levels.WARN)
     else
-        vim.notify("LSP enabled — reopen buffers to attach", vim.log.levels.INFO)
+        vim.notify("LSP enabled", vim.log.levels.INFO)
     end
 end, { noremap = true, silent = true, desc = "Toggle LSP" })
 

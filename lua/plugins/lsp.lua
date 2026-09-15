@@ -24,7 +24,7 @@ local specs = {
         dependencies = { "williamboman/mason.nvim" },
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            ensure_installed = { "clangd", "lua_ls" },
+            ensure_installed = { "emmylua_ls" },
             automatic_installation = false,
             automatic_enable = false,
         },
@@ -66,16 +66,33 @@ local specs = {
 
             -- Lua
             ---@type vim.lsp.Config
-            local lua_ls = {
+            local emmylua_ls = {
+                on_init = function(client)
+                    if client.workspace_folders then
+                        local path = client.workspace_folders[1].name
+                        if
+                            path ~= vim.fn.stdpath("config")
+                            and (vim.uv.fs_stat(path .. "/.emmyrc.json") or vim.uv.fs_stat(path .. "/.luarc.json"))
+                        then
+                            client.config.settings = {}
+                        end
+                    end
+                end,
                 settings = {
-                    Lua = {
-                        diagnostics = { globals = { "vim", "uv" } },
-                        workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+                    emmylua = {
+                        runtime = { version = "LuaJIT" },
+                        diagnostics = { globals = { "vim" } },
+                        workspace = {
+                            library = {
+                                vim.env.VIMRUNTIME,
+                                vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
+                            },
+                        },
                     },
                 },
                 capabilities = caps,
             }
-            server(exe("lua-language-server"), "lua_ls", lua_ls)
+            server(exe("emmylua_ls"), "emmylua_ls", emmylua_ls)
 
             ---@type vim.lsp.Config
             local clangd = {
@@ -130,7 +147,8 @@ local specs = {
             }
             server(exe("vue-language-server") and vim.fs.root(0, { "tsconfig.json" }) ~= nil, "vue_ls", vue_ls)
 
-            if #enabled > 0 then
+            vim.g.lsp_servers = enabled
+            if #enabled > 0 and not vim.g.lsp_disabled then
                 lsp.enable(enabled)
             end
 
@@ -147,7 +165,7 @@ local specs = {
                     local bufnr = ev.buf
 
                     -- Prefer treesitter highlighting over semantic tokens
-                    if client and client.server_capabilities.semanticTokensProvider then
+                    if client and client.server_capabilities and client.server_capabilities.semanticTokensProvider then
                         client.server_capabilities.semanticTokensProvider = nil
                     end
 
